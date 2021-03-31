@@ -1,3 +1,31 @@
+
+%------------------------------ Definición de la base de datos ----------------------------------------------------------------
+
+
+/*conecta(origen, destino, distancia, tiempoNormal, tiempoPresa) indica que origen conecta con destino con una distancia
+de x cantidad de kilómetros e indica el tiempo promedio en condiciones normales así como con presa*/
+
+conecta(a, b, 2, 10, 20)
+conecta(a, f, 3, 15, 30)
+conecta(a, d, 1, 5, 10)
+conecta(b, a, 2, 14, 28)
+conecta(b, e, 4, 20, 40)
+conecta(c, e, 5, 15, 30)
+conecta(c, g, 7, 35, 70)
+conecta(d, a, 1, 3, 6)
+conecta(d, g, 8, 40, 80)
+conecta(e, b, 4, 12, 24)
+conecta(e, c, 5, 25, 50)
+conecta(e, f, 6, 30, 60)
+conecta(f, a, 3, 21, 42)
+conecta(f, e, 6, 18, 36)
+conecta(g, c, 7, 21, 42)
+conecta(g, d, 8, 24, 48)
+
+
+%------------------------------ Sintagmas nominales y verbales ----------------------------------------------------------------
+
+
 oracion(S0,S):- sintagma_nominal(S0,S1), sintagma_verbal(S1,S).
 
 sintagma_nominal(S0,S):- determinante(S0,S1), nombre(S1,S).
