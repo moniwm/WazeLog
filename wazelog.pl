@@ -79,16 +79,16 @@ concatenar([X|L1],L2,[X|L3]):- concatenar(L1,L2,L3).
 %Por ejemplo: ?- separar_oracion('Voy a ir a San José', L).     L = ["Voy", "a", "ir", "a", "San José"] 
 separar_oracion(Oracion , Lista) :- split_string(Oracion, " ", " ", Palabras), 
                                     unir_nombres_propios(Palabras, ListaInvertida), 
-                                    inversa(ListaInvertida, Lista), !.
+                                    inversa(ListaInvertida, Lista), !. %corte para obtener el primer resultado únicamente
 
-unir_nombres_propios(P, L) :- unir_nombres_propios(P, [], L).
+unir_nombres_propios(P, L) :- unir_nombres_propios(P, [], L). %Regla para unir los nombres propios (palabras que empiezan con mayúscula) en un solo elemento
 unir_nombres_propios([X|Tail], Aux, L) :- Aux == [], unir_nombres_propios(Tail, [X|Aux], L). %añade primera palabra siempre
 unir_nombres_propios([], L, L). %condicion de parada
 
 unir_nombres_propios([X|Tail1], [Y|Tail2], L) :- %une nombres propios en un solo elemento de la lista
                                         inicial_es_mayus(Y), %si la última palabra añadida empieza con mayúscula
                                         inicial_es_mayus(X), %si la próxima palabra a añadir empieza con mayúscula
-                                        string_concat(Y, " ", X1), %concatenar separadas por espacio en blanco
+                                        string_concat(Y, " ", X1), %concatenar palabras separadas por espacio en blanco
                                         string_concat(X1, X, NombrePropio),
                                         unir_nombres_propios(Tail1, [NombrePropio|Tail2], L). %añadir nuevo nombre a la lista                                       
                                   
@@ -109,4 +109,12 @@ inversa(L1,L2) :- inversa(L1,[],L2).
 inversa([],L,L).
 inversa([X|L1],L2,L3) :- inversa(L1,[X|L2],L3).
                              
+%X es la longitud de la lista L
+longitud(L,X) :- longitud(L,X,0).
+longitud([],X,Y) :- X is Y.
+longitud([_|Tail], X, Y) :- longitud(Tail, X, Y + 1).
 
+wazelog(Lista) :-
+    write('\n¡Hola! Bienvenido a Wazelog, la mejor lógica computacional para llegar a su destino.\n Por favor, indíqueme dónde se encuentra: \n'),
+    read_line_to_string(user_input, Oracion),
+    separar_oracion(Oracion, Lista).
