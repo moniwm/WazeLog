@@ -1,6 +1,5 @@
 
-%------------------------------ Definición de la base de datos ----------------------------------------------------------------
-
+%------------------------------ Definición de la base de datos para el grafo ----------------------------------------------------------------
 
 /*
 conecta(origen, destino, distancia, tiempoNormal, tiempoPresa) indica que origen conecta con destino con una distancia
@@ -53,26 +52,7 @@ min([],M,M).
 min([[P,L]|R],[_,M],Min) :- L < M, !, min(R,[P,L],Min). 
 min([_|R],M,Min) :- min(R,M,Min).
 
-%------------------------------ Sintagmas nominales y verbales ----------------------------------------------------------------
-
-
-oracion(S0,S):- sintagma_nominal(S0,S1), sintagma_verbal(S1,S).
-
-sintagma_nominal(S0,S):- determinante(S0,S1), nombre(S1,S).
-
-sintagma_verbal(S0,S):- verbo(S0,S).
-sintagma_verbal(S0,S):- verbo(S0,S1), sintagma_nominal(S1,S).
-
-determinante([el|S],S).
-determinante([la|S],S).
-
-nombre([hombre|S],S).
-nombre([manzana|S],S).
-
-verbo([come|S],S).
-
-concatenar([],L,L).
-concatenar([X|L1],L2,[X|L3]):- concatenar(L1,L2,L3).
+%------------------------------ Sistema Experto ----------------------------------------------------------------
 
 %Recibe el string Oracion y separa todas las palabras en una lista. Si hay dos palabras seguidas que inician con mayúscula, 
 %las une en un solo elemento de la lista. 

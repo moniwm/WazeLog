@@ -1,6 +1,6 @@
 
 oracion(X, Lugar):-oracion(Lugar, X,[]),lugar(Lugar),!.
-oracion([X|Resto], Lugar):-oracion(Resto, Lugar). %en caso de que la oracion empiece con sintagmas no reconocidos, se va descomponiendo la lista
+%oracion([X|Resto], Lugar):-oracion(Resto, Lugar). %en caso de que la oracion empiece con sintagmas no reconocidos, se va descomponiendo la lista
 														%hasta que encuentra una oración reconocible
 
 lugar(alajuela).
@@ -103,13 +103,14 @@ sp(Preposicion)-->preposicion(Preposicion),coordinacion_sintagma_nominal(_,_,_,o
 sintagma_preposicional(Lugar)--> sp(Preposicion, Lugar), sintagma_preposicional(Lugar). %se admiten varios sintagmas preposicionales e.g. la casa de Monica en Cartago
 sintagma_preposicional(Lugar)-->[].
 
-sp(Preposicion, Lugar)-->preposicion(Preposicion),coordinacion_sintagma_nominal(_,_,_,oblicuo, Lugar). 
+sp(Preposicion, Lugar)-->preposicion(Preposicion),coordinacion_sintagma_nominal(_,_,_,oblicuo, Lugar).
+sp(Preposicion, _) --> preposicion(Preposicion), verbo(Pide,Genero,Numero,Persona,Lexema). %verbo seguido de preposicion e infinitivo e.g. voy a ir 
 
 
 %sintagma verbal
-sintagma_verbal(Modo,Genero,Numero,Persona, Lugar) --> auxiliares(Modo,Genero,Numero,Persona,_,Pide),
+sintagma_verbal(Modo,Genero,Numero,Persona, Lugar) --> pronombre(Genero,Numero,Persona,oblicuo), % pronombre oblicuo e.g. me voy a ir
+							auxiliares(Modo,Genero,Numero,Persona,_,Pide),
 							verbo(Pide,Genero,Numero,Persona,Lexema),
-							%sintagma_nominal(Genero,Numero,Persona,Caso, Lugar).
 							sintagma_preposicional(Lugar).
 
 %Caso en que el verbo sea auxiliar o modal e.g. quiero ir, ha ido, está yendo
@@ -133,129 +134,107 @@ y --> ['y'].
 y --> ['o'].
 
 %determinantes
-determinante(femenino,singular) --> ['la'].
-determinante(femenino,plural) --> ['las'].
-determinante(masculino,singular) --> ['el'].
-determinante(masculino,plural) --> ['los'].
-determinante(_, singular) --> ['mi'].
-determinante(_, plural) --> ['mis'].
-determinante(_, singular) --> ['tu'].
-determinante(_, plural) --> ['tus'].
-determinante(_, singular) --> ['su'].
-determinante(_, plural) --> ['sus'].
-determinante(masculino,singular) --> ['nuestro'].
-determinante(masculino,plural) --> ['nuestros'].
-determinante(femenino,singular) --> ['nuestra'].
-determinante(femenino,plural) --> ['nuestras'].
-determinante(masculino,singular) --> ['un'].
-determinante(masculino,plural) --> ['unos'].
-determinante(femenino,singular) --> ['una'].
-determinante(femenino,plural) --> ['unas'].
-determinante(masculino,singular) --> ['algun'].
-determinante(masculino,plural) --> ['algunos'].
-determinante(femenino,singular) --> ['alguna'].
-determinante(femenino,plural) --> ['algunas'].
+determinante(femenino,singular) --> ['la'];['La'].
+determinante(femenino,plural) --> ['las'];['Las'].
+determinante(masculino,singular) --> ['el'];['El'].
+determinante(masculino,plural) --> ['los'];['Los'].
+determinante(_, singular) --> ['mi'];['Mi'].
+determinante(_, plural) --> ['mis'];['Mis'].
+determinante(_, singular) --> ['tu'];['Tu'].
+determinante(_, plural) --> ['tus'];['Tus'].
+determinante(_, singular) --> ['su'];['Su'].
+determinante(_, plural) --> ['sus'];['Sus'].
+determinante(masculino,singular) --> ['nuestro'];['Nuestro'].
+determinante(masculino,plural) --> ['nuestros'];['Nuestros'].
+determinante(femenino,singular) --> ['nuestra'];['Nuestra'].
+determinante(femenino,plural) --> ['nuestras'];['Nuestras'].
+determinante(masculino,singular) --> ['un'];['Un'].
+determinante(masculino,plural) --> ['unos'];['Unos'].
+determinante(femenino,singular) --> ['una'];['Una'].
+determinante(femenino,plural) --> ['unas'];['Unas'].
+determinante(masculino,singular) --> ['algun'];['Algun'].
+determinante(masculino,plural) --> ['algunos'];['Algunos'].
+determinante(femenino,singular) --> ['alguna'];['Alguna'].
+determinante(femenino,plural) --> ['algunas'];['Algunas'].
 
-determinante(femenino,singular) --> ['La'].
-determinante(femenino,plural) --> ['Las'].
-determinante(masculino,singular) --> ['El'].
-determinante(masculino,plural) --> ['Los'].
-determinante(_, singular) --> ['Mi'].
-determinante(_, plural) --> ['Mis'].
-determinante(_, singular) --> ['Tu'].
-determinante(_, plural) --> ['Tus'].
-determinante(_, singular) --> ['Su'].
-determinante(_, plural) --> ['Sus'].
-determinante(masculino,singular) --> ['Nuestro'].
-determinante(masculino,plural) --> ['Nuestros'].
-determinante(femenino,singular) --> ['Nuestra'].
-determinante(femenino,plural) --> ['Nuestras'].
-determinante(masculino,singular) --> ['Un'].
-determinante(masculino,plural) --> ['Unos'].
-determinante(femenino,singular) --> ['Una'].
-determinante(femenino,plural) --> ['Unas'].
-determinante(masculino,singular) --> ['Algun'].
-determinante(masculino,plural) --> ['Algunos'].
-determinante(femenino,singular) --> ['Alguna'].
-determinante(femenino,plural) --> ['Algunas'].
 
 determinante(_,_) --> []. %en caso de que no haya: cuando el sintagma nominal empieza con 
 						  %una preposición e.g. "en Alajuela" (sintagma preposicional hace 
 						  %llamado recursivo a sintagma nominal) 
 
 %sustantivos
-sustantivo(femenino,singular,casa) --> ['casa'].
-sustantivo(femenino,singular,universidad) --> ['universidad'].
-sustantivo(femenino,singular,soda) --> ['soda'].
-sustantivo(femenino,singular,cafeteria) --> ['cafeteria'].
-sustantivo(femenino,singular,iglesia) --> ['iglesia'].
-sustantivo(femenino,singular,oficina) --> ['oficina'].
-sustantivo(femenino,singular,estacion) --> ['estacion'].
-sustantivo(femenino,singular,comisaria) --> ['comisaria'].
-sustantivo(femenino,singular,catedral) --> ['catedral'].
-sustantivo(femenino,singular,gasolinera) --> ['gasolinera'].
-sustantivo(femenino,singular,piscina) --> ['piscina'].
-sustantivo(femenino,singular) --> ['hermana'].
-sustantivo(femenino,singular) --> ['madre'].
-sustantivo(femenino,singular) --> ['amiga'].
-sustantivo(femenino,singular) --> ['prima'].
-sustantivo(femenino,singular) --> ['esposa'].
-sustantivo(femenino,singular) --> ['novia'].
-sustantivo(femenino,singular) --> ['sobrina'].
-sustantivo(femenino,singular) --> ['tia'].
-sustantivo(femenino,singular) --> ['vecina'].
+sustantivo(femenino,singular,casa) --> ['casa'];['Casa'].
+sustantivo(femenino,singular,universidad) --> ['universidad'];['Universidad'].
+sustantivo(femenino,singular,soda) --> ['soda'];['Soda'].
+sustantivo(femenino,singular,cafeteria) --> ['cafeteria'];['Cafeteria'].
+sustantivo(femenino,singular,iglesia) --> ['iglesia'];['Iglesia'].
+sustantivo(femenino,singular,oficina) --> ['oficina'];['Oficina'].
+sustantivo(femenino,singular,estacion) --> ['estacion'];['Estacion'].
+sustantivo(femenino,singular,comisaria) --> ['comisaria'];['Comisaria'].
+sustantivo(femenino,singular,catedral) --> ['catedral'];['Catedral'].
+sustantivo(femenino,singular,gasolinera) --> ['gasolinera'];['Gasolinera'].
+sustantivo(femenino,singular,piscina) --> ['piscina'];['Piscina'].
+sustantivo(femenino,singular) --> ['hermana'];['Hermana'].
+sustantivo(femenino,singular) --> ['madre'];['Madre'].
+sustantivo(femenino,singular) --> ['amiga'];['Amiga'].
+sustantivo(femenino,singular) --> ['prima'];['Prima'].
+sustantivo(femenino,singular) --> ['esposa'];['Esposa'].
+sustantivo(femenino,singular) --> ['novia'];['Novia'].
+sustantivo(femenino,singular) --> ['sobrina'];['Sobrina'].
+sustantivo(femenino,singular) --> ['tia'];['Tia'].
+sustantivo(femenino,singular) --> ['vecina'];['Vecina'].
 
-sustantivo(femenino,plural) --> ['hermanas'].
-sustantivo(femenino,plural) --> ['madres'].
-sustantivo(femenino,plural) --> ['amigas'].
-sustantivo(femenino,plural) --> ['primas'].
-sustantivo(femenino,plural) --> ['esposas'].
-sustantivo(femenino,plural) --> ['novias'].
-sustantivo(femenino,plural) --> ['sobrinas'].
-sustantivo(femenino,plural) --> ['tias'].
-sustantivo(femenino,plural) --> ['vecinas'].
+sustantivo(femenino,plural) --> ['hermanas'];['Hermanas'].
+sustantivo(femenino,plural) --> ['madres'];['Madres'].
+sustantivo(femenino,plural) --> ['amigas'];['Amigas'].
+sustantivo(femenino,plural) --> ['primas'];['Primas'].
+sustantivo(femenino,plural) --> ['esposas'];['Esposas'].
+sustantivo(femenino,plural) --> ['novias'];['Novias'].
+sustantivo(femenino,plural) --> ['sobrinas'];['Sobrinas'].
+sustantivo(femenino,plural) --> ['tias'];['Tias'].
+sustantivo(femenino,plural) --> ['vecinas'];['Vecinas'].
 
-sustantivo(masculino, singular, supermercado) --> ['supermercado'].
-sustantivo(masculino, singular, mall) --> ['mall'].
-sustantivo(masculino, singular, apartamento) --> ['apartamento'].
-sustantivo(masculino, singular, aeropuerto) --> ['aeropuerto'].
-sustantivo(masculino, singular, colegio) --> ['colegio'].
-sustantivo(masculino, singular, cine) --> ['cine'].
-sustantivo(masculino, singular, teatro) --> ['teatro'].
-sustantivo(masculino, singular, parque) --> ['parque'].
-sustantivo(masculino, singular, estadio) --> ['estadio'].
-sustantivo(masculino, singular, gimnasio) --> ['gimnasio'].
-sustantivo(masculino, singular, hotel) --> ['hotel'].
-sustantivo(masculino, singular, motel) --> ['motel'].
-sustantivo(masculino, singular, banco) --> ['banco'].
-sustantivo(masculino, singular, templo) --> ['templo'].
-sustantivo(masculino, singular, museo) --> ['museo'].
+sustantivo(masculino, singular, supermercado) --> ['supermercado'];['Supermercado'].
+sustantivo(masculino, singular, mall) --> ['mall'];['Mall'].
+sustantivo(masculino, singular, apartamento) --> ['apartamento'];['Apartamento'].
+sustantivo(masculino, singular, aeropuerto) --> ['aeropuerto'];['Aeropuerto'].
+sustantivo(masculino, singular, colegio) --> ['colegio'];['Colegio'].
+sustantivo(masculino, singular, cine) --> ['cine'];['Cine'].
+sustantivo(masculino, singular, teatro) --> ['teatro'];['Teatro'].
+sustantivo(masculino, singular, parque) --> ['parque'];['Parque'].
+sustantivo(masculino, singular, estadio) --> ['estadio'];['Estadio'].
+sustantivo(masculino, singular, gimnasio) --> ['gimnasio'];['Gimnasio'].
+sustantivo(masculino, singular, hotel) --> ['hotel'];['Hotel'].
+sustantivo(masculino, singular, motel) --> ['motel'];['Motel'].
+sustantivo(masculino, singular, banco) --> ['banco'];['Banco'].
+sustantivo(masculino, singular, templo) --> ['templo'];['Templo'].
+sustantivo(masculino, singular, museo) --> ['museo'];['Museo'].
 
-sustantivo(masculino, singular) --> ['hermano'].
-sustantivo(masculino, singular) --> ['padre'].
-sustantivo(masculino, singular) --> ['amigo'].
-sustantivo(masculino, singular) --> ['primo'].
-sustantivo(masculino, singular) --> ['esposo'].
-sustantivo(masculino, singular) --> ['novio'].
-sustantivo(masculino, singular) --> ['sobrino'].
-sustantivo(masculino, singular) --> ['tio'].
-sustantivo(masculino, singular) --> ['vecino'].
+sustantivo(masculino, singular) --> ['hermano'];['Hermano'].
+sustantivo(masculino, singular) --> ['padre'];['Padre'].
+sustantivo(masculino, singular) --> ['amigo'];['Amigo'].
+sustantivo(masculino, singular) --> ['primo'];['Primo'].
+sustantivo(masculino, singular) --> ['esposo'];['Esposo'].
+sustantivo(masculino, singular) --> ['novio'];['Novio'].
+sustantivo(masculino, singular) --> ['sobrino'];['Sobrino'].
+sustantivo(masculino, singular) --> ['tio'];['Tio'].
+sustantivo(masculino, singular) --> ['vecino'];['Vecino'].
 
-sustantivo(masculino, plural) --> ['hermanos'].
-sustantivo(masculino, plural) --> ['padres'].
-sustantivo(masculino, plural) --> ['amigos'].
-sustantivo(masculino, plural) --> ['primos'].
-sustantivo(masculino, plural) --> ['esposos'].
-sustantivo(masculino, plural) --> ['novios'].
-sustantivo(masculino, plural) --> ['sobrinos'].
-sustantivo(masculino, plural) --> ['tios'].
-sustantivo(masculino, plural) --> ['vecinos'].
+sustantivo(masculino, plural) --> ['hermanos'];['Hermanos'].
+sustantivo(masculino, plural) --> ['padres'];['Padres'].
+sustantivo(masculino, plural) --> ['amigos'];['Amigos'].
+sustantivo(masculino, plural) --> ['primos'];['Primos'].
+sustantivo(masculino, plural) --> ['esposos'];['Esposos'].
+sustantivo(masculino, plural) --> ['novios'];['Novios'].
+sustantivo(masculino, plural) --> ['sobrinos'];['Sobrinos'].
+sustantivo(masculino, plural) --> ['tios'];['Tios'].
+sustantivo(masculino, plural) --> ['vecinos'];['Vecinos'].
 
-sustantivo(masculino, singular) --> ['punto'].
-sustantivo(masculino, singular) --> ['origen'].
-sustantivo(masculino, singular) --> ['salida'].
-sustantivo(masculino, singular) --> ['destino'].
-sustantivo(masculino, singular) --> ['llegada'].
+sustantivo(masculino, singular) --> ['punto'];['Punto'].
+sustantivo(masculino, singular) --> ['origen'];['Origen'].
+sustantivo(masculino, singular) --> ['salida'];['Salida'].
+sustantivo(masculino, singular) --> ['destino'];['Destino'].
+sustantivo(masculino, singular) --> ['llegada'];['Llegada'].
 
 %Nodos del Grafo
 sustantivo(masculino,singular,cartago) --> ['Cartago'];['cartago'].
@@ -270,37 +249,21 @@ sustantivo(_,_) --> []. %en caso de que no haya
 sustantivo(_,_,_) --> []. %en caso de que no haya
 
 %Pronombres personales
-pronombre(_,singular,primera,nominativo) --> ['yo'].
-pronombre(_,singular,primera,oblicuo) --> ['mi'].
-pronombre(_,singular,segunda,_) --> ['vos'].
-pronombre(_,singular,segunda,nominativo) --> ['tu'].
-pronombre(_,singular,segunda,oblicuo) --> ['ti'].
-pronombre(masculino,plural,primera,_) --> ['nosotros'].
-pronombre(femenino,plural,primera,_) --> ['nosotras'].
-pronombre(masculino,singular,tercera,_) --> ['el'].
-pronombre(femenino,singular,tercera,_) --> ['ella'].
-pronombre(masculino,plural,tercera,_) --> ['ellos'].
-pronombre(femenino,plural,tercera,_) --> ['ellas'].
-pronombre(_,singular,primera,oblicuo) --> ['me'].
-pronombre(_,singular,segunda,nominativo) --> ['te'].
-pronombre(_,plural,primera,oblicuo) --> ['nos'].
-pronombre(_,_,tercera,oblicuo) --> ['se'].
-
-pronombre(_,singular,primera,nominativo) --> ['Yo'].
-pronombre(_,singular,primera,oblicuo) --> ['Mi'].
-pronombre(_,singular,segunda,_) --> ['Vos'].
-pronombre(_,singular,segunda,nominativo) --> ['Tu'].
-pronombre(_,singular,segunda,oblicuo) --> ['Ti'].
-pronombre(masculino,plural,primera,_) --> ['Nosotros'].
-pronombre(femenino,plural,primera,_) --> ['Nosotras'].
-pronombre(masculino,singular,tercera,_) --> ['El'].
-pronombre(femenino,singular,tercera,_) --> ['Ella'].
-pronombre(masculino,plural,tercera,_) --> ['Ellos'].
-pronombre(femenino,plural,tercera,_) --> ['Ellas'].
-pronombre(_,singular,primera,oblicuo) --> ['Me'].
-pronombre(_,singular,segunda,nominativo) --> ['Te'].
-pronombre(_,plural,primera,oblicuo) --> ['Nos'].
-pronombre(_,_,tercera,oblicuo) --> ['Se'].
+pronombre(_,singular,primera,nominativo) --> ['yo'];['Yo'].
+pronombre(_,singular,primera,oblicuo) --> ['mi'];['Mi'].
+pronombre(_,singular,segunda,_) --> ['vos'];['Vis'].
+pronombre(_,singular,segunda,nominativo) --> ['tu'];['Tu'].
+pronombre(_,singular,segunda,oblicuo) --> ['ti'];['Ti'].
+pronombre(masculino,plural,primera,_) --> ['nosotros'];['Nosotros'].
+pronombre(femenino,plural,primera,_) --> ['nosotras'];['Nosotras'].
+pronombre(masculino,singular,tercera,_) --> ['el'];['El'].
+pronombre(femenino,singular,tercera,_) --> ['ella'];['Ella'].
+pronombre(masculino,plural,tercera,_) --> ['ellos'];['Ellos'].
+pronombre(femenino,plural,tercera,_) --> ['ellas'];['Ellas'].
+pronombre(_,singular,primera,oblicuo) --> ['me'];['Me'].
+pronombre(_,singular,segunda,nominativo) --> ['te'];['Te'].
+pronombre(_,plural,primera,oblicuo) --> ['nos'];['Nos'].
+pronombre(_,_,tercera,oblicuo) --> ['se'];['Se'].
 
 pronombre(_,_,_,_) --> [].
 
@@ -311,197 +274,222 @@ nombre_propio(masculino) --> ['Marco'].
 nombre_propio(_) --> [].
 
 %Preposiciones
-preposicion(a) --> ['a'].
-preposicion(al) --> ['al'].
-preposicion(ante) --> ['ante'].
-preposicion(bajo) --> ['bajo'].
-preposicion(cabe) --> ['cabe'].
-preposicion(con) --> ['con'].
-preposicion(contra) --> ['contra'].
-preposicion(de)-->['de'].
-preposicion(desde) --> ['desde'].
-preposicion(durante) --> ['durante'].
-preposicion(en) --> ['en'].
-preposicion(entre) --> ['entre'].
-preposicion(hacia) --> ['hacia'].
-preposicion(hasta) --> ['hasta'].
-preposicion(mediante) --> ['mediante'].
-preposicion(para) --> ['para'].
-preposicion(por) --> ['por'].
-preposicion(segun) --> ['segun'].
-preposicion(segun) --> ['segun'].
-preposicion(sin) --> ['sin'].
-preposicion(sobre)-->['sobre'].
-preposicion(tras) --> ['tras'].
-
-preposicion(a) --> ['A'].
-preposicion(al) --> ['Al'].
-preposicion(ante) --> ['Ante'].
-preposicion(bajo) --> ['Bajo'].
-preposicion(cabe) --> ['Cabe'].
-preposicion(con) --> ['Con'].
-preposicion(contra) --> ['Contra'].
-preposicion(de)-->['De'].
-preposicion(desde) --> ['Desde'].
-preposicion(durante) --> ['Durante'].
-preposicion(en) --> ['En'].
-preposicion(entre) --> ['Entre'].
-preposicion(hacia) --> ['Hacia'].
-preposicion(hasta) --> ['Hasta'].
-preposicion(mediante) --> ['Mediante'].
-preposicion(para) --> ['Para'].
-preposicion(por) --> ['Por'].
-preposicion(segun) --> ['Segun'].
-preposicion(segun) --> ['Segun'].
-preposicion(sin) --> ['Sin'].
-preposicion(sobre)-->['Sobre'].
-preposicion(tras) --> ['Tras'].
+preposicion(a) --> ['a'];['A'].
+preposicion(al) --> ['al'];['Al'].
+preposicion(ante) --> ['ante'];['Ante'].
+preposicion(bajo) --> ['bajo'];['Bajo'].
+preposicion(cabe) --> ['cabe'];['Cabe'].
+preposicion(con) --> ['con'];['Con'].
+preposicion(contra) --> ['contra'];['Contra'].
+preposicion(de)-->['de'];['De'].
+preposicion(desde) --> ['desde'];['Desde'].
+preposicion(durante) --> ['durante'];['Durante'].
+preposicion(en) --> ['en'];['En'].
+preposicion(entre) --> ['entre'];['Entre'].
+preposicion(hacia) --> ['hacia'];['Hacia'].
+preposicion(hasta) --> ['hasta'];['Hasta'].
+preposicion(mediante) --> ['mediante'];['Mediante'].
+preposicion(para) --> ['para'];['Para'].
+preposicion(por) --> ['por'];['Por'].
+preposicion(segun) --> ['segun'];['Segun'].
+preposicion(sin) --> ['sin'];['Sin'].
+preposicion(sobre)-->['sobre'];['Sobre'].
+preposicion(tras) --> ['tras'];['Tras'].
+preposicion(que) --> ['que'];['Que'].
 
 %-----------------------------------------
 %verbos
 verbo(_,_,_,_,_) --> [].
 %ser
-verbo(indicativo,_,singular,primera,ser) --> ['soy'].
-verbo(indicativo,_,singular,segunda,ser) --> ['sos'].
-verbo(indicativo,_,singular,segunda,ser) --> ['eres'].
-verbo(indicativo,_,singular,tercera,ser) --> ['es'].
-verbo(indicativo,_,plural,primera,ser) --> ['somos'].
-verbo(indicativo,_,plural,segunda,ser) --> ['son']. 
-verbo(indicativo,_,plural,tercera,ser) --> ['son'].
+verbo(indicativo,_,singular,primera,ser) --> ['soy'];['sere'];['Soy'];['Sere'].
+verbo(indicativo,_,singular,segunda,ser) --> ['sos'];['seras'];['Sos'];['Seras'].
+verbo(indicativo,_,singular,segunda,ser) --> ['eres'];['seras'];['Eres'];['Seras'].
+verbo(indicativo,_,singular,tercera,ser) --> ['es'];['seran'];['Es'];['Seran'].
+verbo(indicativo,_,plural,primera,ser) --> ['somos'];['seremos'];['Somos'];['Seremos'].
+verbo(indicativo,_,plural,segunda,ser) --> ['son'];['seran'];['Son'];['Seran']. 
+verbo(indicativo,_,plural,tercera,ser) --> ['son'];['seran'];['Son'];['Seran'].
 
-verbo(participio,_,_,_,ser)-->['sido'].
-verbo(gerundio,_,_,_,ser)-->['siendo'].
-verbo(infinitivo,_,_,_,ser)-->['ser'].
+verbo(participio,_,_,_,ser)-->['sido'];['Sido'].
+verbo(gerundio,_,_,_,ser)-->['siendo'];['Siendo'].
+verbo(infinitivo,_,_,_,ser)-->['ser'];['Ser'].
 
 %estar
-verbo(indicativo,_,singular,primera,estar) --> ['estoy'].
-verbo(indicativo,_,singular,segunda,estar) --> ['estas'].
-verbo(indicativo,_,singular,tercera,estar) --> ['esta'].
-verbo(indicativo,_,plural,primera,estar) --> ['estamos'].
-verbo(indicativo,_,plural,segunda,estar) --> ['estan']. 
-verbo(indicativo,_,plural,tercera,estar) --> ['estan'].
+verbo(indicativo,_,singular,primera,estar) --> ['estoy'];['estare'];['Estoy'];['Estare'].
+verbo(indicativo,_,singular,segunda,estar) --> ['estas'];['estaras'];['Estas'];['Estaras'].
+verbo(indicativo,_,singular,tercera,estar) --> ['esta'];['estara'];['Esta'];['Estara'].
+verbo(indicativo,_,plural,primera,estar) --> ['estamos'];['estaremos'];['Estamos'];['Estaremos'].
+verbo(indicativo,_,plural,segunda,estar) --> ['estan'];['estaran'];['Estan'];['Estaran']. 
+verbo(indicativo,_,plural,tercera,estar) --> ['estan'];['estaran'];['Estan'];['Estaran'].
 
-verbo(participio,_,_,_,estar)-->['estado'].
-verbo(gerundio,_,_,_,estar)-->['estando'].
-verbo(infinitivo,_,_,_,estar)-->['estar'].
+verbo(participio,_,_,_,estar)-->['estado'];['Estado'].
+verbo(gerundio,_,_,_,estar)-->['estando'];['Estando'].
+verbo(infinitivo,_,_,_,estar)-->['estar'];['Estar'].
 
 %ir
-verbo(indicativo,_,singular,primera,ir) --> ['voy'].
-verbo(indicativo,_,singular,segunda,ir) --> ['vas'].
-verbo(indicativo,_,singular,tercera,ir) --> ['va'].
-verbo(indicativo,_,plural,primera,ir) --> ['vamos'].
-verbo(indicativo,_,plural,segunda,ir) --> ['van']. 
-verbo(indicativo,_,plural,tercera,ir) --> ['van'].
+verbo(indicativo,_,singular,primera,ir) --> ['voy'];['ire'];['Voy'];['Ire'].
+verbo(indicativo,_,singular,segunda,ir) --> ['vas'];['iras'];['Vas'];['Iras'].
+verbo(indicativo,_,singular,tercera,ir) --> ['va'];['ira'];['Va'];['Ira'].
+verbo(indicativo,_,plural,primera,ir) --> ['vamos'];['iremos'];['Vamos'];['Iremos'].
+verbo(indicativo,_,plural,segunda,ir) --> ['van'];['iran'];['Van'];['Iran']. 
+verbo(indicativo,_,plural,tercera,ir) --> ['van'];['iran'];['Van'];['Iran'].
 
-verbo(participio,_,_,_,ir)-->['ido'].
-verbo(gerundio,_,_,_,ir)-->['yendo'].
-verbo(infinitivo,_,_,_,ir)-->['ir'].
+verbo(participio,_,_,_,ir)-->['ido'];['Ido'].
+verbo(gerundio,_,_,_,ir)-->['yendo'];['Yendo'].
+verbo(infinitivo,_,_,_,ir)-->['ir'];['Ir'].
+
+%pasar
+verbo(indicativo,_,singular,primera,pasar) --> ['paso'];['pasare'];['Paso'];['Pasare'].
+verbo(indicativo,_,singular,segunda,pasar) --> ['pasas'];['pasaras'];['Pasas'];['Pasaras'].
+verbo(indicativo,_,singular,tercera,pasar) --> ['pasa'];['pasara'];['Pasa'];['Pasara'].
+verbo(indicativo,_,plural,primera,pasar) --> ['pasamos'];['pasaremos'];['Pasamos'];['Pasaremos'].
+verbo(indicativo,_,plural,segunda,pasar) --> ['pasan'];['pasaran'];['Pasan'];['Pasaran']. 
+verbo(indicativo,_,plural,tercera,pasar) --> ['pasan'];['pasaran'];['Pasan'];['Pasaran'].
+
+verbo(participio,_,_,_,pasar)-->['pasado'];['Pasado'].
+verbo(gerundio,_,_,_,pasar)-->['pasando'];['Pasando'].
+verbo(infinitivo,_,_,_,pasar)-->['pasar'];['Pasar'].
 
 %encontrar
-verbo(indicativo,_,singular,primera,encontrar) --> ['encuentro'].
-verbo(indicativo,_,singular,segunda,encontrar) --> ['encontras'].
-verbo(indicativo,_,singular,tercera,encontrar) --> ['encuentra'].
-verbo(indicativo,_,plural,primera,encontrar) --> ['encontramos'].
-verbo(indicativo,_,plural,segunda,encontrar) --> ['encuentran']. 
-verbo(indicativo,_,plural,tercera,encontrar) --> ['encuentran'].
+verbo(indicativo,_,singular,primera,encontrar) --> ['encuentro'];['encontrare'];['Encuentro'];['Encontrare'].
+verbo(indicativo,_,singular,segunda,encontrar) --> ['encontras'];['encontraras'];['Encontras'];['Encontraras'].
+verbo(indicativo,_,singular,tercera,encontrar) --> ['encuentra'];['encontrara'];['Encuentra'];['Encontrara'].
+verbo(indicativo,_,plural,primera,encontrar) --> ['encontramos'];['encontraremos'];['Encontramos'];['Encontraremos'].
+verbo(indicativo,_,plural,segunda,encontrar) --> ['encuentran'];['encontraran'];['Encuentran'];['Encontraran']. 
+verbo(indicativo,_,plural,tercera,encontrar) --> ['encuentran'];['encontraran'];['Encuentran'];['Encontraran'].
 
-verbo(participio,_,_,_,encontrar)-->['encontrado'].
-verbo(gerundio,_,_,_,encontrar)-->['encontrando'].
-verbo(infinitivo,_,_,_,encontrar)-->['encontrar'].
+verbo(participio,_,_,_,encontrar)-->['encontrado'];['Encontrado'].
+verbo(gerundio,_,_,_,encontrar)-->['encontrando'];['Encontrando'].
+verbo(infinitivo,_,_,_,encontrar)-->['encontrar'];['Encontrar'].
 
 %ubicar
-verbo(indicativo,_,singular,primera,ubicar) --> ['ubico'].
-verbo(indicativo,_,singular,segunda,ubicar) --> ['ubicas'].
-verbo(indicativo,_,singular,tercera,ubicar) --> ['ubica'].
-verbo(indicativo,_,plural,primera,ubicar) --> ['ubicamos'].
-verbo(indicativo,_,plural,segunda,ubicar) --> ['ubican']. 
-verbo(indicativo,_,plural,tercera,ubicar) --> ['ubican'].
+verbo(indicativo,_,singular,primera,ubicar) --> ['ubico'];['ubicare'];['Ubico'];['Ubicare'].
+verbo(indicativo,_,singular,segunda,ubicar) --> ['ubicas'];['ubicaras'];['Ubicas'];['Ubicaras'].
+verbo(indicativo,_,singular,tercera,ubicar) --> ['ubica'];['ubicara'];['Ubica'];['Ubicara'].
+verbo(indicativo,_,plural,primera,ubicar) --> ['ubicamos'];['ubicaremos'];['Ubicamos'];['Ubicaremos'].
+verbo(indicativo,_,plural,segunda,ubicar) --> ['ubican'];['ubicaran'];['Ubican'];['Ubicaran']. 
+verbo(indicativo,_,plural,tercera,ubicar) --> ['ubican'];['ubicaran'];['Ubican'];['Ubicaran'].
 
-verbo(participio,_,_,_,ubicar)-->['ubicado'].
-verbo(gerundio,_,_,_,ubicar)-->['ubicando'].
-verbo(infinitivo,_,_,_,ubicar)-->['ubicar'].
+verbo(participio,_,_,_,ubicar)-->['ubicado'];['Ubicado'].
+verbo(gerundio,_,_,_,ubicar)-->['ubicando'];['Ubicando'].
+verbo(infinitivo,_,_,_,ubicar)-->['ubicar'];['Ubicar'].
 
 %dirigir
-verbo(indicativo,_,singular,primera,dirigir) --> ['dirijo'].
-verbo(indicativo,_,singular,segunda,dirigir) --> ['dirigis'].
-verbo(indicativo,_,singular,tercera,dirigir) --> ['dirige'].
-verbo(indicativo,_,plural,primera,dirigir) --> ['dirigimos'].
-verbo(indicativo,_,plural,segunda,dirigir) --> ['dirigen']. 
-verbo(indicativo,_,plural,tercera,dirigir) --> ['dirigen'].
+verbo(indicativo,_,singular,primera,dirigir) --> ['dirijo'];['dirigire'];['Dirijo'];['Dirigire'].
+verbo(indicativo,_,singular,segunda,dirigir) --> ['dirigis'];['dirigiras'];['Dirigis'];['Dirigiras'].
+verbo(indicativo,_,singular,tercera,dirigir) --> ['dirige'];['dirigira'];['Dirige'];['Dirigira'].
+verbo(indicativo,_,plural,primera,dirigir) --> ['dirigimos'];['dirigiremos'];['Dirigimos'];['Dirigiremos'].
+verbo(indicativo,_,plural,segunda,dirigir) --> ['dirigen'];['dirigiran'];['Dirigen'];['Dirigiran']. 
+verbo(indicativo,_,plural,tercera,dirigir) --> ['dirigen'];['dirigiran'];['Dirigen'];['Dirigiran'].
 
-verbo(participio,_,_,_,dirigir)-->['dirigido'].
-verbo(gerundio,_,_,_,dirigir)-->['dirigiendo'].
-verbo(infinitivo,_,_,_,dirigir)-->['dirigir'].
+verbo(participio,_,_,_,dirigir)-->['dirigido'];['Dirigido'].
+verbo(gerundio,_,_,_,dirigir)-->['dirigiendo'];['Dirigiendo'].
+verbo(infinitivo,_,_,_,dirigir)-->['dirigir'];['Dirigir'].
 
 %viajar
-verbo(indicativo,_,singular,primera,viajar) --> ['viajo'].
-verbo(indicativo,_,singular,segunda,viajar) --> ['viajas'].
-verbo(indicativo,_,singular,tercera,viajar) --> ['viaja'].
-verbo(indicativo,_,plural,primera,viajar) --> ['viajamos'].
-verbo(indicativo,_,plural,segunda,viajar) --> ['viajan']. 
-verbo(indicativo,_,plural,tercera,viajar) --> ['viajan'].
+verbo(indicativo,_,singular,primera,viajar) --> ['viajo'];['viajare'];['Viajo'];['Viajare'].
+verbo(indicativo,_,singular,segunda,viajar) --> ['viajas'];['viajaras'];['Viajas'];['Viajaras'].
+verbo(indicativo,_,singular,tercera,viajar) --> ['viaja'];['viajara'];['Viaja'];['Viajara'].
+verbo(indicativo,_,plural,primera,viajar) --> ['viajamos'];['viajaremos'];['Viajamos'];['Viajaremos'].
+verbo(indicativo,_,plural,segunda,viajar) --> ['viajan'];['viajaran'];['Viajan'];['Viajaran']. 
+verbo(indicativo,_,plural,tercera,viajar) --> ['viajan'];['viajaran'];['Viajan'];['Viajaran'].
 
-verbo(participio,_,_,_,viajar)-->['viajado'].
-verbo(gerundio,_,_,_,viajar)-->['viajando'].
-verbo(infinitivo,_,_,_,viajar)-->['viajar'].
+verbo(participio,_,_,_,viajar)-->['viajado'];['Viajado'].
+verbo(gerundio,_,_,_,viajar)-->['viajando'];['Viajando'].
+verbo(infinitivo,_,_,_,viajar)-->['viajar'];['Viajar'].
 
 %localizar
-verbo(indicativo,_,singular,primera,localizar) --> ['localizo'].
-verbo(indicativo,_,singular,segunda,localizar) --> ['localizas'].
-verbo(indicativo,_,singular,tercera,localizar) --> ['localiza'].
-verbo(indicativo,_,plural,primera,localizar) --> ['localizamos'].
-verbo(indicativo,_,plural,segunda,localizar) --> ['localizan']. 
-verbo(indicativo,_,plural,tercera,localizar) --> ['localizan'].
+verbo(indicativo,_,singular,primera,localizar) --> ['localizo'];['localizare'];['Localizo'];['Localizare'].
+verbo(indicativo,_,singular,segunda,localizar) --> ['localizas'];['localizaras'];['Localizas'];['Localizara'].
+verbo(indicativo,_,singular,tercera,localizar) --> ['localiza'];['localizara'];['Localiza'];['Localizara'].
+verbo(indicativo,_,plural,primera,localizar) --> ['localizamos'];['localizaremos'];['Localizamos'];['Localizaremos'].
+verbo(indicativo,_,plural,segunda,localizar) --> ['localizan'];['localizaran'];['Localizan'];['Localizaran']. 
+verbo(indicativo,_,plural,tercera,localizar) --> ['localizan'];['localizaran'];['Localizan'];['Localizaran'].
 
-verbo(participio,_,_,_,localizar)-->['localizado'].
-verbo(gerundio,_,_,_,localizar)-->['localizando'].
-verbo(infinitivo,_,_,_,localizar)-->['localizar'].
+verbo(participio,_,_,_,localizar)-->['localizado'];['Localizado'].
+verbo(gerundio,_,_,_,localizar)-->['localizando'];['Localizando'].
+verbo(infinitivo,_,_,_,localizar)-->['localizar'];['Localizar'].
 
 %verbos auxiliares
+%haber
+verbo(aux,participio,_,singular,primera,haber) --> ['he'];['He'].
+verbo(aux,participio,_,singular,segunda,haber) --> ['has'];['Has'].
+verbo(aux,participio,_,singular,tercera,haber) --> ['ha'];['Ha'].
+verbo(aux,participio,_,plural,primera,haber) --> ['hemos'];['Hemos'].
+verbo(aux,participio,_,plural,segunda,haber) --> ['han'];['Han']. 
+verbo(aux,participio,_,plural,tercera,haber) --> ['han'];['Han'].
 
-verbo(aux,participio,_,singular,primera,haber) --> ['he'].
-verbo(aux,participio,_,singular,segunda,haber) --> ['has'].
-verbo(aux,participio,_,singular,tercera,haber) --> ['ha'].
-verbo(aux,participio,_,plural,primera,haber) --> ['hemos'].
-verbo(aux,participio,_,plural,segunda,haber) --> ['han']. 
-verbo(aux,participio,_,plural,segunda,haber) --> ['habeis']. 
-verbo(aux,participio,_,plural,tercera,haber) --> ['han'].
+verbo(aux,participio,_,_,_,haber)-->['habido'];['Habido'].
+verbo(aux,gerundio,_,_,_,haber)-->['habiendo'];['Habiendo'].
 
-verbo(aux,participio,_,_,_,haber)-->[habido].
-verbo(aux,gerundio,_,_,_,haber)-->[habiendo].
+%estar
+verbo(aux,gerundio,_,singular,primera,estar) --> ['estoy'];['Estoy'];['estaria'];['Estaria'].
+verbo(aux,gerundio,_,singular,segunda,estar) --> ['estas'];['Estas'].
+verbo(aux,gerundio,_,singular,tercera,estar) --> ['estan'];['Estan'].
+verbo(aux,gerundio,_,plural,primera,estar) --> ['estamos'];['Estamos'].
+verbo(aux,gerundio,_,plural,segunda,estar) --> ['estan'];['Estan']. 
+verbo(aux,gerundio,_,plural,tercera,estar) --> ['estan'];['Estan'].
 
-verbo(aux,gerundio,_,singular,primera,estar) --> ['estoy'].
-verbo(aux,gerundio,_,singular,segunda,estar) --> ['estas'].
-verbo(aux,gerundio,_,singular,tercera,estar) --> ['estan'].
-verbo(aux,gerundio,_,plural,primera,estar) --> ['estamos'].
-verbo(aux,gerundio,_,plural,segunda,estar) --> ['estan']. 
-verbo(aux,gerundio,_,plural,segunda,estar) --> ['estais']. 
-verbo(aux,gerundio,_,plural,tercera,estar) --> ['estan'].
+verbo(aux,participio,_,_,_,estar)-->['estado'];['Estado'].
+verbo(aux,gerundio,_,_,_,estar)-->['estando'];['Estando'].
 
-verbo(aux,participio,_,_,_,estar)-->['estado'].
-verbo(aux,gerundio,_,_,_,estar)-->['estando'].
+%querer
+verbo(indicativo,_,singular,primera,querer) --> ['quiero'];['Quiero'];['quisiera'];['Quisiera'].
+verbo(indicativo,_,singular,segunda,querer) --> ['queres'];['Queres'].
+verbo(indicativo,_,singular,segunda,querer) --> ['quieres'];['Quieres'].
+verbo(indicativo,_,singular,tercera,querer) --> ['quiere'];['Quiere'].
+verbo(indicativo,_,plural,primera,querer) --> ['queremos'];['Queremos'].
+verbo(indicativo,_,plural,segunda,querer) --> ['quieren'];['Quieren']. 
+verbo(indicativo,_,plural,tercera,querer) --> ['quieren'];['Quieren'].
 
-verbo(indicativo,_,singular,primera,querer) --> ['quiero'].
-verbo(indicativo,_,singular,segunda,querer) --> ['queres'].
-verbo(indicativo,_,singular,segunda,querer) --> ['quieres'].
-verbo(indicativo,_,singular,tercera,querer) --> ['quiere'].
-verbo(indicativo,_,plural,primera,querer) --> ['queremos'].
-verbo(indicativo,_,plural,segunda,querer) --> ['quieren']. 
-verbo(indicativo,_,plural,tercera,querer) --> ['quieren'].
+verbo(participio,_,_,_,querer)-->['querido'];['Querido'].
+verbo(gerundio,_,_,_,querer)-->['queriendo'];['Queriendo'].
+verbo(infinitivo,_,_,_,querer)-->['querer'];['Querer'].
 
-verbo(participio,_,_,_,querer)-->[querido].
-verbo(gerundio,_,_,_,querer)-->[queriendo].
+%desear
+verbo(indicativo,_,singular,primera,desear) --> ['deseo'];['Deseo'];['desearia'];['Desearia'].
+verbo(indicativo,_,singular,segunda,desear) --> ['deseas'];['Deseas'].
+verbo(indicativo,_,singular,tercera,desear) --> ['desea'];['Desea'].
+verbo(indicativo,_,plural,primera,desear) --> ['deseamos'];['Deseamos'].
+verbo(indicativo,_,plural,segunda,desear) --> ['desean'];['Desean']. 
+verbo(indicativo,_,plural,tercera,desear) --> ['desean'];['Desean'].
 
-verbo(indicativo,_,singular,primera,desear) --> ['deseo'];['Deseo'].
-verbo(indicativo,_,singular,segunda,desear) --> ['deseas'].
-verbo(indicativo,_,singular,tercera,desear) --> ['desea'].
-verbo(indicativo,_,plural,primera,desear) --> ['deseamos'].
-verbo(indicativo,_,plural,segunda,desear) --> ['desean']. 
-verbo(indicativo,_,plural,tercera,desear) --> ['desean'].
+verbo(participio,_,_,_,desear)-->['deseado'];['Deseado'].
+verbo(gerundio,_,_,_,desear)-->['deseando'];['Deseando'].
+verbo(infinitivo,_,_,_,desear)-->['desear'];['Desear'].
 
-verbo(participio,_,_,_,desear)-->['deseado'].
-verbo(gerundio,_,_,_,desear)-->['deseando'].
+%tener
+verbo(indicativo,_,singular,primera,tener) --> ['tengo'];['Tengo'];['tendria'];['Tendria'].
+verbo(indicativo,_,singular,segunda,tener) --> ['tenes'];['Tenes'].
+verbo(indicativo,_,singular,tercera,tener) --> ['tiene'];['Tiene'].
+verbo(indicativo,_,plural,primera,tener) --> ['tenemos'];['Tenemos'].
+verbo(indicativo,_,plural,segunda,tener) --> ['tienen'];['Tienen']. 
+verbo(indicativo,_,plural,tercera,tener) --> ['tienen'];['Tienen'].
+
+verbo(participio,_,_,_,tener)-->['tenido'];['Tenido'].
+verbo(gerundio,_,_,_,tener)-->['teniendo'];['Teniendo'].
+verbo(infinitivo,_,_,_,tener)-->['tener'];['Tener'].
+
+%necesitar
+verbo(indicativo,_,singular,primera,necesitar) --> ['necesito'];['Necesito'];['necesitaria'];['Necesitaria'].
+verbo(indicativo,_,singular,segunda,necesitar) --> ['necesitas'];['Necesitas'].
+verbo(indicativo,_,singular,tercera,necesitar) --> ['necesita'];['Necesita'].
+verbo(indicativo,_,plural,primera,necesitar) --> ['necesitamos'];['Necesitamos'].
+verbo(indicativo,_,plural,segunda,necesitar) --> ['necesitan'];['Necesitan']. 
+verbo(indicativo,_,plural,tercera,necesitar) --> ['necesitan'];['Necesitan'].
+
+verbo(participio,_,_,_,necesitar)-->['necesitado'];['Necesitado'].
+verbo(gerundio,_,_,_,necesitar)-->['necesitando'];['Necesitando'].
+verbo(infinitivo,_,_,_,necesitar)-->['necesitar'];['Necesitar'].
+
+%gustar
+verbo(indicativo,_,_,_,gustar) --> ['gusta'];['Gusta'];['gustara'];['Gustara'];['gustaria'];['Gustaria'].
+
+verbo(participio,_,_,_,gustar)-->['gustado'];['Gustado'].
+verbo(gerundio,_,_,_,gustar)-->['gustando'];['Gustando'].
+verbo(infinitivo,_,_,_,gustar)-->['gustar'];['Gustar'].
 
 verbo(modal,Modo,Genero,Numero,Persona,querer)-->verbo(Modo,Genero,Numero,Persona,querer). %convertir verbo querer en modal tambien
 verbo(modal,Modo,Genero,Numero,Persona,desear)-->verbo(Modo,Genero,Numero,Persona,desear). %convertir verbo desear en modal tambien
-
+verbo(modal,Modo,Genero,Numero,Persona,tener)-->verbo(Modo,Genero,Numero,Persona,tener). %convertir verbo tener en modal tambien
+verbo(modal,Modo,Genero,Numero,Persona,necesitar)-->verbo(Modo,Genero,Numero,Persona,necesitar). %convertir verbo tener en modal tambien
+verbo(modal,Modo,Genero,Numero,Persona,gustar)-->verbo(Modo,Genero,Numero,Persona,gustar). %convertir verbo gustar en modal tambien
