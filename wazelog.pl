@@ -1,3 +1,4 @@
+:-use_module(dcg).
 
 %------------------------------ Definición de la base de datos para el grafo ----------------------------------------------------------------
 
@@ -57,9 +58,14 @@ min([_|R],M,Min) :- min(R,M,Min).
 %Recibe el string Oracion y separa todas las palabras en una lista. Si hay dos palabras seguidas que inician con mayúscula, 
 %las une en un solo elemento de la lista. 
 %Por ejemplo: ?- separar_oracion('Voy a ir a San José', L).     L = ["Voy", "a", "ir", "a", "San José"] 
-separar_oracion(Oracion , Lista) :- split_string(Oracion, " ", " ", Palabras), 
-                                    unir_nombres_propios(Palabras, ListaInvertida), 
-                                    inversa(ListaInvertida, Lista), !. %corte para obtener el primer resultado únicamente
+separar_oracion(Oracion , Lista) :- split_string(Oracion, " ", " ", Strings),
+                                    unir_nombres_propios(Strings, Palabras),
+                                    convertir_string_char(Palabras, Lista), !.%corte para obtener el primer resultado únicamente
+
+%Convierte lista de strings a una lista de atoms
+convertir_string_char(Strings, Chars) :- convertir_string_char(Strings, [], Chars).
+convertir_string_char([], L0, L0).
+convertir_string_char([X|Resto], L0, L1) :- atom_string(Atom, X), convertir_string_char(Resto, [Atom|L0], L1).
 
 unir_nombres_propios(P, L) :- unir_nombres_propios(P, [], L). %Regla para unir los nombres propios (palabras que empiezan con mayúscula) en un solo elemento
 unir_nombres_propios([X|Tail], Aux, L) :- Aux == [], unir_nombres_propios(Tail, [X|Aux], L). %añade primera palabra siempre
@@ -94,7 +100,45 @@ longitud(L,X) :- longitud(L,X,0).
 longitud([],X,Y) :- X is Y.
 longitud([_|Tail], X, Y) :- longitud(Tail, X, Y + 1).
 
-wazelog(Lista) :-
+wazelog :-
     write('\n¡Hola! Bienvenido a Wazelog, la mejor lógica computacional para llegar a su destino.\n Por favor, indíqueme dónde se encuentra: \n'),
+    obtener_lugar([], L0),
+    write('\nEntendido. ¿Cuál es su destino?\n'),
+    obtener_lugar(L0,L1),
+    punto_intermedio(L1, L2),
+    write(L2), !.
+
+obtener_lugar(L0, L1) :- 
     read_line_to_string(user_input, Oracion),
-    separar_oracion(Oracion, Lista).
+    separar_oracion(Oracion, Lista),
+    oracion(Lista,L), nodo(L, Lugar), append(L0, [Lugar], L1), !.
+
+obtener_lugar(L0, L1) :- 
+    write('\nNo logré captar el lugar que mencionó. Por favor descríbalo nuevamente.\n'),
+    obtener_lugar(L0, L1).
+
+punto_intermedio(L0,L1) :- 
+    write('\nExcelente, ¿tiene algún destino intermedio? [si/no]\n'),
+    read_line_to_string(user_input, Resp),
+    atom_string(Atom, Resp),
+    afirmacion(Atom),
+    write('\nPor favor indíqueme cuál es la ubicación de este punto intermedio: \n'),
+    obtener_lugar(L0,L1).
+
+punto_intermedio(L0,L0).
+
+afirmacion(si).
+
+nodo('Alajuela', 'Alajuela').
+nodo('San Jose', 'San Jose').
+nodo('Cartago', 'Cartago').
+nodo('Heredia', 'Heredia').
+nodo('Limon', 'Limon').
+nodo('Guanacaste', 'Guanacaste').
+nodo('Puntarenas', 'Puntarenas').
+
+nodo(Lugar, L) :- format('\n¿Donde se ubica este lugar: ~a?\n',[Lugar]),
+    read_line_to_string(user_input, Oracion),
+    separar_oracion(Oracion, Lista),
+    oracion(Lista,L),
+    nodo(L, L), !.
