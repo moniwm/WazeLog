@@ -8,22 +8,38 @@ de x cantidad de kilómetros y posee una lista de 2 tiempos:  el primero es el t
 el segundo es el tiempo con presa
 */
 
-conecta(a, b, 2, 10, 20).
-conecta(a, f, 3, 15, 30).
-conecta(a, d, 1, 5, 10).
-conecta(b, a, 2, 14, 28).
-conecta(b, e, 4, 20, 40).
-conecta(c, e, 5, 15, 30).
-conecta(c, g, 7, 35, 70).
-conecta(d, a, 1, 3, 6).
-conecta(d, g, 8, 40, 80).
-conecta(e, b, 4, 12, 24).
-conecta(e, c, 5, 25, 50).
-conecta(e, f, 6, 30, 60).
-conecta(f, a, 3, 21, 42).
-conecta(f, e, 6, 18, 36).
-conecta(g, c, 7, 21, 42).
-conecta(g, d, 8, 24, 48).
+conecta(san_jose, corralillo, 22, 22, 44).
+conecta(san_jose, cartago, 20, 20, 40).
+conecta(tres_rios, san_jose, 8, 8, 16).
+conecta(tres_rios, pacayas, 15, 15, 30).
+conecta(cartago, san_jose, 20, 20, 40).
+conecta(cartago, tres_rios, 8, 8, 16).
+conecta(cartago, musgo_verde, 10, 10, 20).
+conecta(cartago, pacayas, 13, 13, 26).
+conecta(cartago, paraiso, 10, 10, 20).
+conecta(corralillo, san_jose, 22, 22, 44).
+conecta(corralillo, musgo_verde, 6, 6, 12).
+conecta(musgo_verde, corralillo, 6, 6, 12).
+conecta(musgo_verde, cartago, 10, 10, 20).
+conecta(pacayas, cartago, 13, 13, 26).
+conecta(pacayas, tres_rios, 15, 15, 30).
+conecta(pacayas, cervantes, 8, 8, 16).
+conecta(cervantes, pacayas, 8, 8, 16).
+conecta(cervantes, juan_vinas, 5, 5, 10).
+conecta(cervantes, cachi, 7, 7, 14).
+conecta(paraiso, cervantes, 4, 4, 8).
+conecta(paraiso, cachi, 10, 10, 20).
+conecta(paraiso, orosi, 8, 8, 16).
+conecta(orosi, paraiso, 8, 8, 16).
+conecta(orosi, cachi, 12, 12, 24).
+conecta(cachi, paraiso, 10, 10, 20).
+conecta(cachi, orosi, 12, 12, 24).
+conecta(cachi, cervantes, 7, 7, 14).
+conecta(cachi, turrialba, 40, 40, 80).
+conecta(juan_vinas, turrialba, 4, 4, 8).
+conecta(turrialba, cachi, 40, 40, 80).
+conecta(turrialba, pacayas, 18, 18, 36).
+
 
 
 ruta(Origen, Destino, Ruta, Distancia, TiempoNormal, TiempoPresa) :- 
