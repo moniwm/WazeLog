@@ -60,12 +60,12 @@ min([_|R],M,Min) :- min(R,M,Min).
 %Por ejemplo: ?- separar_oracion('Voy a ir a San José', L).     L = ["Voy", "a", "ir", "a", "San José"] 
 separar_oracion(Oracion , Lista) :- split_string(Oracion, " ", " ", Strings),
                                     unir_nombres_propios(Strings, Palabras),
-                                    convertir_string_char(Palabras, Lista), !.%corte para obtener el primer resultado únicamente
+                                    convertir_string_atom(Palabras, Lista), !.%corte para obtener el primer resultado únicamente
 
 %Convierte lista de strings a una lista de atoms
-convertir_string_char(Strings, Chars) :- convertir_string_char(Strings, [], Chars).
-convertir_string_char([], L0, L0).
-convertir_string_char([X|Resto], L0, L1) :- atom_string(Atom, X), convertir_string_char(Resto, [Atom|L0], L1).
+convertir_string_atom(Strings, Chars) :- convertir_string_atom(Strings, [], Chars).
+convertir_string_atom([], L0, L0).
+convertir_string_atom([X|Resto], L0, L1) :- atom_string(Atom, X), convertir_string_atom(Resto, [Atom|L0], L1).
 
 unir_nombres_propios(P, L) :- unir_nombres_propios(P, [], L). %Regla para unir los nombres propios (palabras que empiezan con mayúscula) en un solo elemento
 unir_nombres_propios([X|Tail], Aux, L) :- Aux == [], unir_nombres_propios(Tail, [X|Aux], L). %añade primera palabra siempre
