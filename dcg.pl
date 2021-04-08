@@ -5,13 +5,18 @@ oracion(X, Lugar):-oracion(Lugar, X,[]),lugar(Lugar),!.
 oracion([X|Resto], Lugar):-oracion(Resto, Lugar). %en caso de que la oracion empiece con sintagmas no reconocidos, se va descomponiendo la lista
 														%hasta que encuentra una oración reconocible
 
-lugar('Alajuela').
 lugar('San Jose').
 lugar('Cartago').
-lugar('Heredia').
-lugar('Limon').
-lugar('Guanacaste').
-lugar('Puntarenas').
+lugar('Corralillo').
+lugar('Musgo Verde').
+lugar('Tres Rios').
+lugar('Pacayas').
+lugar('Paraiso').
+lugar('Cervantes').
+lugar('Juan Vinas').
+lugar('Turrialba').
+lugar('Cachi').
+lugar('Orosi').
 
 lugar(casa).
 lugar(universidad).
@@ -238,14 +243,20 @@ sustantivo(masculino, singular) --> ['salida'];['Salida'].
 sustantivo(masculino, singular) --> ['destino'];['Destino'].
 sustantivo(masculino, singular) --> ['llegada'];['Llegada'].
 
-%Nodos del Grafo
+%lugars del Grafo
 sustantivo(masculino,singular,'Cartago') --> ['Cartago'];['cartago'].
 sustantivo(masculino,singular,'San Jose') --> ['San Jose'];['san jose'].
-sustantivo(masculino,singular,'Limon') --> ['Limon'];['limon'].
-sustantivo(masculino,singular,'Guanacaste') --> ['Guanacaste'];['guanacaste'].
-sustantivo(femenino,singular,'Alajuela') --> ['Alajuela'];['alajuela'].
-sustantivo(femenino,singular,'Heredia') --> ['Heredia'];['heredia'].
-sustantivo(femenino,singular,'Puntarenas') --> ['Puntarenas'];['puntarenas'].
+sustantivo(masculino,singular,'Corralillo') --> ['Corralillo'];['corralillo'].
+sustantivo(masculino,singular,'Tres Rios') --> ['Tres Rios'];['tres rios'].
+sustantivo(masculino,singular,'Musgo Verde') --> ['Musgo Verde'];['musgo verde'].
+sustantivo(masculino,singular,'Pacayas') --> ['Pacayas'];['pacayas'].
+sustantivo(masculino,singular,'Paraiso') --> ['Paraiso'];['paraiso'].
+sustantivo(masculino,singular,'Cervantes') --> ['Cervantes'];['cervantes'].
+sustantivo(masculino,singular,'Orosi') --> ['Orosi'];['orosi'].
+sustantivo(masculino,singular,'Juan Vinas') --> ['Juan Vinas'];['juan vinas'].
+sustantivo(masculino,singular,'Turrialba') --> ['Turrialba'];['turrialba'].
+sustantivo(masculino,singular,'Cachi') --> ['Cachi'];['cachi'].
+
 
 sustantivo(_,_) --> []. %en caso de que no haya
 sustantivo(_,_,_) --> []. %en caso de que no haya

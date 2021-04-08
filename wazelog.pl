@@ -8,37 +8,37 @@ de x cantidad de kilómetros y posee una lista de 2 tiempos:  el primero es el t
 el segundo es el tiempo con presa
 */
 
-conecta(san_jose, corralillo, 22, 22, 44).
-conecta(san_jose, cartago, 20, 20, 40).
-conecta(tres_rios, san_jose, 8, 8, 16).
-conecta(tres_rios, pacayas, 15, 15, 30).
-conecta(cartago, san_jose, 20, 20, 40).
-conecta(cartago, tres_rios, 8, 8, 16).
-conecta(cartago, musgo_verde, 10, 10, 20).
-conecta(cartago, pacayas, 13, 13, 26).
-conecta(cartago, paraiso, 10, 10, 20).
-conecta(corralillo, san_jose, 22, 22, 44).
-conecta(corralillo, musgo_verde, 6, 6, 12).
-conecta(musgo_verde, corralillo, 6, 6, 12).
-conecta(musgo_verde, cartago, 10, 10, 20).
-conecta(pacayas, cartago, 13, 13, 26).
-conecta(pacayas, tres_rios, 15, 15, 30).
-conecta(pacayas, cervantes, 8, 8, 16).
-conecta(cervantes, pacayas, 8, 8, 16).
-conecta(cervantes, juan_vinas, 5, 5, 10).
-conecta(cervantes, cachi, 7, 7, 14).
-conecta(paraiso, cervantes, 4, 4, 8).
-conecta(paraiso, cachi, 10, 10, 20).
-conecta(paraiso, orosi, 8, 8, 16).
-conecta(orosi, paraiso, 8, 8, 16).
-conecta(orosi, cachi, 12, 12, 24).
-conecta(cachi, paraiso, 10, 10, 20).
-conecta(cachi, orosi, 12, 12, 24).
-conecta(cachi, cervantes, 7, 7, 14).
-conecta(cachi, turrialba, 40, 40, 80).
-conecta(juan_vinas, turrialba, 4, 4, 8).
-conecta(turrialba, cachi, 40, 40, 80).
-conecta(turrialba, pacayas, 18, 18, 36).
+conecta('San Jose', 'Corralillo', 22, 22, 44).
+conecta('San Jose', 'Cartago', 20, 20, 40).
+conecta('Tres Rios', 'San Jose', 8, 8, 16).
+conecta('Tres Rios', 'Pacayas', 15, 15, 30).
+conecta('Cartago', 'San Jose', 20, 20, 40).
+conecta('Cartago', 'Tres Rios', 8, 8, 16).
+conecta('Cartago', 'Musgo Verde', 10, 10, 20).
+conecta('Cartago', 'Pacayas', 13, 13, 26).
+conecta('Cartago', 'Paraiso', 10, 10, 20).
+conecta('Corralillo', 'San Jose', 22, 22, 44).
+conecta('Corralillo', 'Musgo Verde', 6, 6, 12).
+conecta('Musgo Verde', 'Corralillo', 6, 6, 12).
+conecta('Musgo Verde', 'Cartago', 10, 10, 20).
+conecta('Pacayas', 'Cartago', 13, 13, 26).
+conecta('Pacayas', 'Tres Rios', 15, 15, 30).
+conecta('Pacayas', 'Cervantes', 8, 8, 16).
+conecta('Cervantes', 'Pacayas', 8, 8, 16).
+conecta('Cervantes', 'Juan Vinas', 5, 5, 10).
+conecta('Cervantes', 'Cachi', 7, 7, 14).
+conecta('Paraiso', 'Cervantes', 4, 4, 8).
+conecta('Paraiso', 'Cachi', 10, 10, 20).
+conecta('Paraiso', 'Orosi', 8, 8, 16).
+conecta('Orosi', 'Paraiso', 8, 8, 16).
+conecta('Orosi', 'Cachi', 12, 12, 24).
+conecta('Cachi', 'Paraiso', 10, 10, 20).
+conecta('Cachi', 'Orosi', 12, 12, 24).
+conecta('Cachi', 'Cervantes', 7, 7, 14).
+conecta('Cachi', 'Turrialba', 40, 40, 80).
+conecta('Juan Vinas', 'Turrialba', 4, 4, 8).
+conecta('Turrialba', 'Cachi', 40, 40, 80).
+conecta('Turrialba', 'Pacayas', 18, 18, 36).
 
 
 
@@ -66,7 +66,9 @@ rutaCorta(Origen, Destino, Ruta, Distancia, TiempoNormal, TiempoPresa) :-
 minima([F|R],M) :- min(R,F,M).
 
 min([],M,M).
-min([[P,L]|R],[_,M],Min) :- L < M, !, min(R,[P,L],Min). 
+min([[P,L]|R],[_,M],Min) :- 
+    L < M, !, 
+    min(R,[P,L],Min). 
 min([_|R],M,Min) :- min(R,M,Min).
 
 %------------------------------ Sistema Experto ----------------------------------------------------------------
@@ -76,12 +78,12 @@ min([_|R],M,Min) :- min(R,M,Min).
 %Por ejemplo: ?- separar_oracion('Voy a ir a San José', L).     L = ["Voy", "a", "ir", "a", "San José"] 
 separar_oracion(Oracion , Lista) :- split_string(Oracion, " ", " ", Strings),
                                     unir_nombres_propios(Strings, Palabras),
-                                    convertir_string_atom(Palabras, Lista), !.%corte para obtener el primer resultado únicamente
+                                    convertir_string_char(Palabras, Lista), !.%corte para obtener el primer resultado únicamente
 
 %Convierte lista de strings a una lista de atoms
-convertir_string_atom(Strings, Chars) :- convertir_string_atom(Strings, [], Chars).
-convertir_string_atom([], L0, L0).
-convertir_string_atom([X|Resto], L0, L1) :- atom_string(Atom, X), convertir_string_atom(Resto, [Atom|L0], L1).
+convertir_string_char(Strings, Chars) :- convertir_string_char(Strings, [], Chars).
+convertir_string_char([], L0, L0).
+convertir_string_char([X|Resto], L0, L1) :- atom_string(Atom, X), convertir_string_char(Resto, [Atom|L0], L1).
 
 unir_nombres_propios(P, L) :- unir_nombres_propios(P, [], L). %Regla para unir los nombres propios (palabras que empiezan con mayúscula) en un solo elemento
 unir_nombres_propios([X|Tail], Aux, L) :- Aux == [], unir_nombres_propios(Tail, [X|Aux], L). %añade primera palabra siempre
@@ -145,13 +147,18 @@ punto_intermedio(L0,L0).
 
 afirmacion(si).
 
-nodo('Alajuela', 'Alajuela').
 nodo('San Jose', 'San Jose').
 nodo('Cartago', 'Cartago').
-nodo('Heredia', 'Heredia').
-nodo('Limon', 'Limon').
-nodo('Guanacaste', 'Guanacaste').
-nodo('Puntarenas', 'Puntarenas').
+nodo('Corralillo', 'Corralillo').
+nodo('Musgo Verde', 'Musgo Verde').
+nodo('Tres Rios', 'Tres Rios').
+nodo('Pacayas', 'Pacayas').
+nodo('Paraiso', 'Paraiso').
+nodo('Cervantes', 'Cervantes').
+nodo('Juan Vinas', 'Juan Vinas').
+nodo('Turrialba', 'Turrialba').
+nodo('Cachi', 'Cachi').
+nodo('Orosi', 'Orosi')
 
 nodo(Lugar, L) :- format('\n¿Donde se ubica este lugar: ~a?\n',[Lugar]),
     read_line_to_string(user_input, Oracion),
