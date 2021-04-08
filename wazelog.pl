@@ -123,8 +123,7 @@ wazelog :-
     obtener_lugar([], L0),
     write('\nEntendido. ¿Cuál es su destino?\n'),
     obtener_lugar(L0,L1),
-    punto_intermedio(L1, L2),
-    write(L2), !.
+    punto_intermedio(L1, L2), !.
 
 obtener_lugar(L0, L1) :- 
     read_line_to_string(user_input, Oracion),
@@ -136,14 +135,20 @@ obtener_lugar(L0, L1) :-
     obtener_lugar(L0, L1).
 
 punto_intermedio(L0,L1) :- 
-    write('\nExcelente, ¿tiene algún destino intermedio? [si/no]\n'),
+    write('\nExcelente, ¿tiene algún otro destino intermedio? [si/no]\n'),
     read_line_to_string(user_input, Resp),
     atom_string(Atom, Resp),
     afirmacion(Atom),
-    write('\nPor favor indíqueme cuál es la ubicación de este punto intermedio: \n'),
-    obtener_lugar(L0,L1).
+    obtener_punto_intermedio(L0, L1).
 
-punto_intermedio(L0,L0).
+punto_intermedio(L0, L0):- write(L0).
+
+obtener_punto_intermedio(L0, L1):-
+    write('\nPor favor indíqueme cuál es la ubicación de este punto intermedio: \n'),
+    read_line_to_string(user_input, Oracion),
+    separar_oracion(Oracion, Lista),
+    oracion(Lista,L), nodo(L, Lugar), nth0(1, L1, Lugar, L0),
+    punto_intermedio(L1, L2).
 
 afirmacion(si).
 
@@ -158,7 +163,7 @@ nodo('Cervantes', 'Cervantes').
 nodo('Juan Vinas', 'Juan Vinas').
 nodo('Turrialba', 'Turrialba').
 nodo('Cachi', 'Cachi').
-nodo('Orosi', 'Orosi')
+nodo('Orosi', 'Orosi').
 
 nodo(Lugar, L) :- format('\n¿Donde se ubica este lugar: ~a?\n',[Lugar]),
     read_line_to_string(user_input, Oracion),
