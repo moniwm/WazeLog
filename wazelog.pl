@@ -40,54 +40,66 @@ conecta('Juan Vinas', 'Turrialba', 4, 4, 8).
 conecta('Turrialba', 'Cachi', 40, 40, 80).
 conecta('Turrialba', 'Pacayas', 18, 18, 36).
 
+%Se dice que existe una Ruta entre Origen y Destino si existe un camino entre ambos lugares
+ruta(Origen, Destino, Ruta, Distancia, Tiempo_Normal, Tiempo_Presa) :- 
+    camino(Origen, Destino, [Origen], Referencia, Distancia, Tiempo_Normal, Tiempo_Presa), %Verifica que exista un camino
+    inversa(Referencia, Ruta). %Verifica que Referencia sea la inversa de Ruta
+
+%Existe un camino entre Origen y Destino si Origen y Destino están conectados
+camino(Origen, Destino, Ruta, [Destino|Ruta], Distancia, Tiempo_Normal, Tiempo_Presa) :- 
+    conecta(Origen, Destino, Distancia, Tiempo_Normal, Tiempo_Presa).
+
+%Existe un camino entre Oriegen y Destino si...
+camino(Origen, Destino, Visitados, Ruta, Distancia, Tiempo_Normal, Tiempo_Presa) :- 
+    conecta(Origen, Intermedio, Distancia_Adyacente, Tiempo_Normal_Adyacente, Tiempo_Presa_Adyacente), %Existe un camino entre el Origen y un punto Intermedio
+    Intermedio \== Destino, %Intermedio es diferente a Destino
+    \+member(Intermedio, Visitados), %Verifica si ese punto intermedio pertenece a los visitados y devuelve true si no pertenece
+    camino(Intermedio, Destino,[Intermedio|Visitados], Ruta, Distancia1, Tiempo_Normal1, Tiempo_Presa1), %Si no pertenece a los visitados, se vuelve a buscar camino entre intermedio y destino
+    Distancia is Distancia_Adyacente + Distancia1, % Va sumando la distancia entre puntos
+    Tiempo_Normal is Tiempo_Normal_Adyacente + Tiempo_Normal1, %Suma el tiempo normal que se tarda yendo entre los puntos
+    Tiempo_Presa is Tiempo_Presa_Adyacente + Tiempo_Presa1. %Suma el tiempo en presa que se tarda yendo entre dos puntos
 
 
-ruta(Origen, Destino, Ruta, Distancia, TiempoNormal, TiempoPresa) :- 
-    camino(Origen, Destino, [Origen], Referencia, Distancia, TiempoNormal, TiempoPresa), 
-    reverse(Referencia, Ruta).
+%Busca la ruta mas corta entre dos puntos basándose en la distancia entre ellos
+ruta_corta(Origen, Destino, Ruta, Distancia, Tiempo_Normal, Tiempo_Presa) :- 
+    setof([R,D], ruta(Origen, Destino, R, D, Tiempo_Normal, Tiempo_Presa), Set), %Produce un set de resultados sin duplicados y de manera ordenada
+    Set = [_|_], %Crea la variable set
+    minima(Set,[Ruta, Distancia]). %Busca la ruta minima
 
-camino(Origen, Destino, Ruta, [Destino|Ruta], Distancia, TiempoNormal, TiempoPresa) :- 
-    conecta(Origen, Destino, Distancia, TiempoNormal, TiempoPresa).
+%Busca la ruta mas corta del set
+minima([Primera|Resto], Menor) :- min(Resto, Primera, Menor).
 
-camino(Origen, Destino, Visitados, Ruta, Distancia, TiempoNormal, TiempoPresa) :- 
-    conecta(Origen, Intermedio, DistanciaAdyacente, TiempoNormalAdyacente, TiempoPresaAdyacente), 
-    Intermedio \== Destino, 
-    \+member(Intermedio, Visitados), 
-    camino(Intermedio, Destino,[Intermedio|Visitados], Ruta, Distancia1, TiempoNormal1, TiempoPresa1), 
-    Distancia is DistanciaAdyacente + Distancia1,
-    TiempoNormal is TiempoNormalAdyacente + TiempoNormal1,
-    TiempoPresa is TiempoPresaAdyacente + TiempoPresa1. 
+%Condicion de parada que indica que se encuentra el menor cuando el set esta vacio y lo ultimo que se comparó es igual a la minima
+min([], Menor, Menor). 
 
-ruta_corta(Origen, Destino, Ruta, Distancia, TiempoNormal, TiempoPresa) :- 
-    setof([R,D], ruta(Origen, Destino, R, D, TiempoNormal, TiempoPresa), Set), 
-    Set = [_|_], 
-    minima(Set,[Ruta, Distancia]).
- 
-minima([F|R],M) :- min(R,F,M).
+%Hecho recursivo que devuelve la ruta menor al comparar distancias
+min([[Ruta, Distancia]|Resto], [_, Distancia_Menor], Menor) :- 
+    Distancia < Distancia_Menor, !, 
+    min(Resto, [Ruta, Distancia], Menor). 
 
-min([],M,M).
-min([[P,L]|R],[_,M],Min) :- 
-    L < M, !, 
-    min(R,[P,L],Min). 
-min([_|R],M,Min) :- min(R,M,Min).
+%Pasa al siguiente elemento del set para compararlo con la referencia
+min([_|Resto], Menor, Referencia) :- min(Resto, Menor, Referencia).
 
-obtener_ruta(Lista_Lugares, Ruta_Parcial, Ruta_Final, Visitados, Distancia, TiempoNormal, TiempoPresa):-
-    Visitados >= 2,
-    nth0(0, Lista_Lugares, Origen, Restante1),
-    nth0(1, Lista_Lugares, Destino, Restante2),
-    obtener_ruta_parcial(Restante1, Origen, Destino, Ruta_Parcial, Ruta_Final, Distancia, TiempoNormal, TiempoPresa), !.
+%Obtiene la ruta con todos los lugares que el usuario quiere visitar
+obtener_ruta(Lista_Lugares, Ruta_Parcial, Ruta_Final, Visitados, Distancia, Tiempo_Normal, Tiempo_Presa):-
+    Visitados >= 2, %Es una condición de parada que indica que puede seguir solo si la lista con lugares tiene 2 elementos o mas
+    nth0(0, Lista_Lugares, Origen, Restante1), % Obtiene el elemento que se quiere tener como origen además de la lista sin el primer elemento
+    nth0(1, Lista_Lugares, Destino, Restante2), % Obtiene el elemento de destino
+    obtener_ruta_parcial(Restante1, Origen, Destino, Ruta_Parcial, Ruta_Final, Distancia, Tiempo_Normal, Tiempo_Presa), !. %Obtiene la ruta parcial entre los dos primeros lugares de la lista
 
-obtener_ruta_parcial(Otros_Lugares, Origen, Destino, Ruta_Parcial, Ruta_Final, Distancia1, TiempoNormal1, TiempoPresa1):-
-    ruta_corta(Origen, Destino, Ruta, Distancia2, TiempoNormal2, TiempoPresa2),
+%Obtiene rutas parciales entre lugares
+obtener_ruta_parcial(Otros_Lugares, Origen, Destino, Ruta_Parcial, Ruta_Final, Distancia1, Tiempo_Normal1, Tiempo_Presa1):-
+    ruta_corta(Origen, Destino, Ruta, Distancia2, Tiempo_Normal2, Tiempo_Presa2), %Obtiene la ruta mas corta
     nth0(0, Ruta, Lugar1, R),
-    append(Ruta_Parcial, R, Ruta_Final),
-    length(Otros_Lugares, Tamano),
+    append(Ruta_Parcial, R, Ruta_Final), %Se crea la ruta parcial de esta forma para evitar que cuando se reitere se repitan los lugares
+    length(Otros_Lugares, Tamano), %Sirve para obtener el tamaño de la lista para la condicion de parada
     Distancia is Distancia1 + Distancia2,
-    TiempoNormal is TiempoNormal1 + TiempoNormal2,
-    TiempoPresa is TiempoPresa1 + TiempoPresa2,
-    obtener_ruta(Otros_Lugares, Ruta_Final, Ruta2, Tamano, Distancia, TiempoNormal, TiempoPresa), !.
-    
-obtener_ruta(Otros_Lugares, Ruta, Ruta, Visitados, Distancia, TiempoNormal, TiempoPresa):-
+    Tiempo_Normal is Tiempo_Normal1 + Tiempo_Normal2,
+    Tiempo_Presa is Tiempo_Presa1 + Tiempo_Presa2,
+    obtener_ruta(Otros_Lugares, Ruta_Final, Ruta2, Tamano, Distancia, Tiempo_Normal, Tiempo_Presa), !.
+
+%Da el mensaje final con la ruta optima obtenida    
+obtener_ruta(Otros_Lugares, Ruta, Ruta, Visitados, Distancia, Tiempo_Normal, Tiempo_Presa):-
     write('La ruta mas optima es: '),
     length(Ruta, Tamano),
     recorrer_lista(Ruta, Elemento, Tamano),
@@ -95,16 +107,14 @@ obtener_ruta(Otros_Lugares, Ruta, Ruta, Visitados, Distancia, TiempoNormal, Tiem
     write(Distancia),
     write('km.'),
     write('\nDuracion en condiciones normales: '),
-    write(TiempoNormal),
+    write(Tiempo_Normal),
     write('min.'),
     write('\nDuracion con presa: '),
-    write(TiempoPresa),
+    write(Tiempo_Presa),
     write('min.'), 
     write('\nGracias por utilizar Wazelog. ¡Buen viaje!\n'), !.
 
-    %write('\nDuracion en condiciones normales: ', TiempoNormal, 'min.'),
-    %write('\nDuración con presa: ', TiempoPresa, 'min.').
-
+%Recorre una lista e imprime cada uno de sus elementos seguidos de una coma para separarlos siempre y cuando el tamaño de la lista sea mayor a 1
 recorrer_lista(Lista, Elemento, Tamano):-
     Tamano > 1,
     nth0(0, Lista, Elemento1, Restante),
@@ -113,6 +123,7 @@ recorrer_lista(Lista, Elemento, Tamano):-
     length(Restante, Tamano2),
     recorrer_lista(Restante, Elemento2, Tamano2).
 
+%Si la lista es mayor a uno se imprime el elemento sin la coma
 recorrer_lista(Lista, Lista, Tamano):-
     nth0(0, Lista, Elemento1, Restante),
     write(Elemento1).
@@ -185,15 +196,18 @@ wazelog :-
     obtener_lugar(L0,L1),
     punto_intermedio(L1, L2), !.
 
+%Obtiene el lugar ingresado por el usuario
 obtener_lugar(L0, L1) :- 
     read_line_to_string(user_input, Oracion),
     separar_oracion(Oracion, Lista),
     oracion(Lista,L), nodo(L, Lugar), append(L0, [Lugar], L1), !.
 
+%En caso de que no capte el lugar notifica al usuario y se vuelve a llamar recursivamente
 obtener_lugar(L0, L1) :- 
     write('\nNo logré captar el lugar que mencionó. Por favor descríbalo nuevamente.\n'),
     obtener_lugar(L0, L1).
 
+%Obtiene los puntos intermedios que el usuario quiera visitar
 punto_intermedio(L0,L1) :- 
     write('\nExcelente, ¿tiene algún otro destino intermedio? [si/no]\n'),
     read_line_to_string(user_input, Resp),
@@ -201,11 +215,13 @@ punto_intermedio(L0,L1) :-
     afirmacion(Atom),
     obtener_punto_intermedio(L0, L1), !.
 
+%Se cumple cuando el usuario ya no quiere ingresar puntos intermedios
 punto_intermedio(L0, L0):- 
     nth0(0, L0, Origen, R),
     length(L0, Tamano),
     obtener_ruta(L0, [Origen], Ruta_Final, Tamano, 0, 0, 0), !.
 
+%Obtiene el nombre del lugar intermedio y lo añade en la posicion 1 de la lista de lugares
 obtener_punto_intermedio(L0, L1):-
     write('\nPor favor indíqueme cuál es la ubicación de este punto intermedio: \n'),
     read_line_to_string(user_input, Oracion),
@@ -213,6 +229,7 @@ obtener_punto_intermedio(L0, L1):-
     oracion(Lista,L), nodo(L, Lugar), nth0(1, L1, Lugar, L0),
     punto_intermedio(L1, L2), !.
 
+%En caso de no captar el lugar, envia un mensaje notificando al usuario y hace una llamada recursiva 
 obtener_punto_intermedio(L0,L1) :-
     write('\nNo logré captar el lugar que mencionó. Por favor descríbalo nuevamente.\n'),
     obtener_punto_intermedio(L0,L1).
