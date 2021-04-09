@@ -16,6 +16,7 @@ lugar('Juan Vinas').
 lugar('Turrialba').
 lugar('Cachi').
 lugar('Orosi').
+lugar('Paraiso').
 
 lugar(casa).
 lugar(universidad).
@@ -256,6 +257,7 @@ sustantivo(femenino,singular,'Juan Vinas') --> ['Juan Vinas'];['juan vinas'];['J
 sustantivo(femenino,singular,'Turrialba') --> ['Turrialba'];['turrialba'].
 sustantivo(femenino,singular,'Cachi') --> ['Cachi'];['cachi'].
 sustantivo(femenino,singular,'Orosi') --> ['Orosi'];['orosi'].
+sustantivo(femenino,singular,'Paraiso') --> ['Paraiso'];['paraiso'].
 
 sustantivo(_,_) --> []. %en caso de que no haya
 sustantivo(_,_,_) --> []. %en caso de que no haya
