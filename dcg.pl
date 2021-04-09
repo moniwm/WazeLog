@@ -43,6 +43,7 @@ lugar(motel).
 lugar(banco).
 lugar(templo).
 lugar(museo).
+lugar(centro).
 
 %Definición de estructura de la oración 
 oracion(Lugar) -->
@@ -78,10 +79,6 @@ coordinacion_sintagma_nominal(Genero, Numero, Persona, Caso) --> sintagma_nomina
 %Predicado simple que denota lugar
 coordinacion_sintagma_nominal(Genero, Numero, Persona, Caso, Lugar) --> sintagma_nominal(Genero, Numero, Persona, Caso, Lugar).
 
-%En un predicado compuesto:
-genero(masculino,_,masculino). %si el primer objeto es genero masculino, se utiliza el genero masculino  
-genero(femenino,X,X). %si el primero objeto es femenino, se usa el genero del segundo objeto
-
 %sintagmas nominales
 sintagma_nominal(Genero,Numero,tercera,_) --> determinante(Genero,Numero),sustantivo(Genero,Numero), sintagma_preposicional.
 sintagma_nominal(Genero,Numero,Persona,Caso) --> pronombre(Genero,Numero,Persona,Caso).
@@ -89,7 +86,11 @@ sintagma_nominal(Genero,singular,tercera,_) --> nombre_propio(Genero).
 
 %sintagma nominal para averiguar lugar de origen/destino
 sintagma_nominal(Genero,Numero,tercera,_,Lugar) --> determinante(Genero,Numero),sustantivo(Genero,Numero,Lugar),sintagma_preposicional(Lugar).
+sintagma_nominal(Genero,Numero,tercera,_,Lugar) --> determinante(Genero,Numero),sustantivo(Genero,Numero,Lugar),sintagma_preposicional. %e.g. la casa de Monica
 
+%En un predicado compuesto:
+genero(masculino,_,masculino). %si el primer objeto es genero masculino, se utiliza el genero masculino  
+genero(femenino,X,X). %si el primero objeto es femenino, se usa el genero del segundo objeto
 
 %Forma de tratamiento en predicados compuestos
 persona(primera,_,primera).
@@ -215,6 +216,7 @@ sustantivo(masculino, singular, motel) --> ['motel'];['Motel'].
 sustantivo(masculino, singular, banco) --> ['banco'];['Banco'].
 sustantivo(masculino, singular, templo) --> ['templo'];['Templo'].
 sustantivo(masculino, singular, museo) --> ['museo'];['Museo'].
+sustantivo(masculino, singular, museo) --> ['centro'];['Centro'].
 
 sustantivo(masculino, singular) --> ['hermano'];['Hermano'].
 sustantivo(masculino, singular) --> ['padre'];['Padre'].
@@ -278,9 +280,22 @@ pronombre(_,_,tercera,oblicuo) --> ['se'];['Se'].
 pronombre(_,_,_,_) --> [].
 
 %Nombres propios
-nombre_propio(femenino) --> ['Monica'].
-nombre_propio(masculino) --> ['Luis Pedro'].
-nombre_propio(masculino) --> ['Marco'].
+nombre_propio(femenino) --> ['Monica'];['monica'].
+nombre_propio(femenino) --> ['Maria'];['maria'].
+nombre_propio(femenino) --> ['Valeria'];['valeria'].
+nombre_propio(femenino) --> ['Andrea'];['andrea'].
+nombre_propio(femenino) --> ['Daniela'];['daniela'].
+nombre_propio(femenino) --> ['Lucia'];['lucia'].
+nombre_propio(femenino) --> ['Ana'];['ana'].
+nombre_propio(femenino) --> ['Fernando'];['fernanda'].
+nombre_propio(masculino) --> ['Luis Pedro'];['luis pedro'].
+nombre_propio(masculino) --> ['Luis'];['luis'].
+nombre_propio(masculino) --> ['Pedro'];['pedro'].
+nombre_propio(masculino) --> ['Esteban'];['esteban'].
+nombre_propio(masculino) --> ['Juan'];['juan'].
+nombre_propio(masculino) --> ['Juan'];['juan'].
+nombre_propio(masculino) --> ['Jose'];['jose'].
+nombre_propio(masculino) --> ['Marco'];['marco'].
 nombre_propio(_) --> [].
 
 %Preposiciones
@@ -397,7 +412,7 @@ verbo(gerundio,_,_,_,dirigir)-->['dirigiendo'];['Dirigiendo'].
 verbo(infinitivo,_,_,_,dirigir)-->['dirigir'];['Dirigir'].
 
 %viajar
-verbo(indicativo,_,singular,primera,viajar) --> ['viajo'];['viajare'];['Viajo'];['Viajare'].
+verbo(indicativo,_,singular,primera,viajar) --> ['viajo'];['viaPara esto, jare'];['Viajo'];['Viajare'].
 verbo(indicativo,_,singular,segunda,viajar) --> ['viajas'];['viajaras'];['Viajas'];['Viajaras'].
 verbo(indicativo,_,singular,tercera,viajar) --> ['viaja'];['viajara'];['Viaja'];['Viajara'].
 verbo(indicativo,_,plural,primera,viajar) --> ['viajamos'];['viajaremos'];['Viajamos'];['Viajaremos'].
