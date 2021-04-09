@@ -2,16 +2,15 @@
 :- module(dcg, [oracion/2]).
 
 oracion(X, Lugar):-oracion(Lugar, X,[]),lugar(Lugar),!.
-oracion([X|Resto], Lugar):-oracion(Resto, Lugar). %en caso de que la oracion empiece con sintagmas no reconocidos, se va descomponiendo la lista
+%oracion([X|Resto], Lugar):-oracion(Resto, Lugar). %en caso de que la oracion empiece con sintagmas no reconocidos, se va descomponiendo la lista
 														%hasta que encuentra una oración reconocible
 
-lugar('San Jose').
 lugar('Cartago').
+lugar('San Jose').
 lugar('Corralillo').
 lugar('Musgo Verde').
 lugar('Tres Rios').
 lugar('Pacayas').
-lugar('Paraiso').
 lugar('Cervantes').
 lugar('Juan Vinas').
 lugar('Turrialba').
@@ -243,20 +242,18 @@ sustantivo(masculino, singular) --> ['salida'];['Salida'].
 sustantivo(masculino, singular) --> ['destino'];['Destino'].
 sustantivo(masculino, singular) --> ['llegada'];['Llegada'].
 
-%lugars del Grafo
+%Nodos del Grafo
 sustantivo(masculino,singular,'Cartago') --> ['Cartago'];['cartago'].
 sustantivo(masculino,singular,'San Jose') --> ['San Jose'];['san jose'].
 sustantivo(masculino,singular,'Corralillo') --> ['Corralillo'];['corralillo'].
-sustantivo(masculino,singular,'Tres Rios') --> ['Tres Rios'];['tres rios'].
 sustantivo(masculino,singular,'Musgo Verde') --> ['Musgo Verde'];['musgo verde'].
-sustantivo(masculino,singular,'Pacayas') --> ['Pacayas'];['pacayas'].
-sustantivo(masculino,singular,'Paraiso') --> ['Paraiso'];['paraiso'].
-sustantivo(masculino,singular,'Cervantes') --> ['Cervantes'];['cervantes'].
-sustantivo(masculino,singular,'Orosi') --> ['Orosi'];['orosi'].
-sustantivo(masculino,singular,'Juan Vinas') --> ['Juan Vinas'];['juan vinas'].
-sustantivo(masculino,singular,'Turrialba') --> ['Turrialba'];['turrialba'].
-sustantivo(masculino,singular,'Cachi') --> ['Cachi'];['cachi'].
-
+sustantivo(femenino,singular,'Tres Rios') --> ['Tres Rios'];['tres rios'].
+sustantivo(femenino,singular,'Pacayas') --> ['Pacayas'];['pacayas'].
+sustantivo(femenino,singular,'Cervantes') --> ['Cervantes'];['cervantes'].
+sustantivo(femenino,singular,'Juan Vinas') --> ['Juan Vinas'];['juan vinas'];['Juan Viñas'];['juan viñas'].
+sustantivo(femenino,singular,'Turrialba') --> ['Turrialba'];['turrialba'].
+sustantivo(femenino,singular,'Cachi') --> ['Cachi'];['cachi'].
+sustantivo(femenino,singular,'Orosi') --> ['Orosi'];['orosi'].
 
 sustantivo(_,_) --> []. %en caso de que no haya
 sustantivo(_,_,_) --> []. %en caso de que no haya
@@ -304,6 +301,7 @@ preposicion(hasta) --> ['hasta'];['Hasta'].
 preposicion(mediante) --> ['mediante'];['Mediante'].
 preposicion(para) --> ['para'];['Para'].
 preposicion(por) --> ['por'];['Por'].
+preposicion(es) --> ['es'];['Es'].
 preposicion(segun) --> ['segun'];['Segun'].
 preposicion(sin) --> ['sin'];['Sin'].
 preposicion(sobre)-->['sobre'];['Sobre'].
