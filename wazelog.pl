@@ -141,7 +141,13 @@ unir_nombres_propios([X|Tail1], [Y|Tail2], L) :- %une nombres propios en un solo
                                         inicial_es_mayus(X), %si la próxima palabra a añadir empieza con mayúscula
                                         string_concat(Y, " ", X1), %concatenar palabras separadas por espacio en blanco
                                         string_concat(X1, X, NombrePropio),
-                                        unir_nombres_propios(Tail1, [NombrePropio|Tail2], L). %añadir nuevo nombre a la lista                                       
+                                        unir_nombres_propios(Tail1, [NombrePropio|Tail2], L). %añadir nuevo nombre a la lista    
+
+unir_nombres_propios([X|Tail1], [Y|Tail2], L) :- %une nombres de lugares de dos palabras en un solo elemento de la lista
+                                        es_nombre_lugar_minuscula(Y), %si la última palabra añadida es uno de los lugares en minuscula
+                                        string_concat(Y, " ", X1), %concatenar palabras separadas por espacio en blanco
+                                        string_concat(X1, X, NombrePropio),
+                                        unir_nombres_propios(Tail1, [NombrePropio|Tail2], L). %añadir nuevo nombre a la lista                                     
                                   
 unir_nombres_propios([X|Tail], L1, L2) :- unir_nombres_propios(Tail, [X|L1], L2). %añade la próxima palabra a L1
 
@@ -150,6 +156,13 @@ unir_nombres_propios([X|Tail], L1, L2) :- unir_nombres_propios(Tail, [X|L1], L2)
 %y valida si se encuentra en el rango de las letras mayúsculas: [65, 90]
 inicial_es_mayus(Palabra) :- string_code(1, Palabra, Code),
                              Code > 64, Code < 91.
+
+%Verifica si cierta palabra corresponge a la primera palabra de los nombres de lugares del grafo pero en minuscula
+es_nombre_lugar_minuscula(Palabra) :- Palabra == "san";
+                                    Palabra == "juan";
+                                    Palabra == "musgo";
+                                    Palabra == "tres".
+
 
 %Valida si X es el primer elemento en Lista:
 %primer_elemento(Lista, X)
@@ -199,6 +212,10 @@ obtener_punto_intermedio(L0, L1):-
     separar_oracion(Oracion, Lista),
     oracion(Lista,L), nodo(L, Lugar), nth0(1, L1, Lugar, L0),
     punto_intermedio(L1, L2), !.
+
+obtener_punto_intermedio(L0,L1) :-
+    write('\nNo logré captar el lugar que mencionó. Por favor descríbalo nuevamente.\n'),
+    obtener_punto_intermedio(L0,L1).
 
 afirmacion(si).
 
