@@ -58,7 +58,7 @@ camino(Origen, Destino, Visitados, Ruta, Distancia, TiempoNormal, TiempoPresa) :
     TiempoNormal is TiempoNormalAdyacente + TiempoNormal1,
     TiempoPresa is TiempoPresaAdyacente + TiempoPresa1. 
 
-rutaCorta(Origen, Destino, Ruta, Distancia, TiempoNormal, TiempoPresa) :- 
+ruta_corta(Origen, Destino, Ruta, Distancia, TiempoNormal, TiempoPresa) :- 
     setof([R,D], ruta(Origen, Destino, R, D, TiempoNormal, TiempoPresa), Set), 
     Set = [_|_], 
     minima(Set,[Ruta, Distancia]).
@@ -70,6 +70,53 @@ min([[P,L]|R],[_,M],Min) :-
     L < M, !, 
     min(R,[P,L],Min). 
 min([_|R],M,Min) :- min(R,M,Min).
+
+obtener_ruta(Lista_Lugares, Ruta_Parcial, Ruta_Final, Visitados, Distancia, TiempoNormal, TiempoPresa):-
+    Visitados >= 2,
+    nth0(0, Lista_Lugares, Origen, Restante1),
+    nth0(1, Lista_Lugares, Destino, Restante2),
+    obtener_ruta_parcial(Restante1, Origen, Destino, Ruta_Parcial, Ruta_Final, Distancia, TiempoNormal, TiempoPresa), !.
+
+obtener_ruta_parcial(Otros_Lugares, Origen, Destino, Ruta_Parcial, Ruta_Final, Distancia1, TiempoNormal1, TiempoPresa1):-
+    ruta_corta(Origen, Destino, Ruta, Distancia2, TiempoNormal2, TiempoPresa2),
+    nth0(0, Ruta, Lugar1, R),
+    append(Ruta_Parcial, R, Ruta_Final),
+    length(Otros_Lugares, Tamano),
+    Distancia is Distancia1 + Distancia2,
+    TiempoNormal is TiempoNormal1 + TiempoNormal2,
+    TiempoPresa is TiempoPresa1 + TiempoPresa2,
+    obtener_ruta(Otros_Lugares, Ruta_Final, Ruta2, Tamano, Distancia, TiempoNormal, TiempoPresa), !.
+    
+obtener_ruta(Otros_Lugares, Ruta, Ruta, Visitados, Distancia, TiempoNormal, TiempoPresa):-
+    write('La ruta mas optima es: '),
+    length(Ruta, Tamano),
+    recorrer_lista(Ruta, Elemento, Tamano),
+    write('\nLa distancia recorrida es de: '),
+    write(Distancia),
+    write('km.'),
+    write('\nDuracion en condiciones normales: '),
+    write(TiempoNormal),
+    write('min.'),
+    write('\nDuracion con presa: '),
+    write(TiempoPresa),
+    write('min.'), 
+    write('\nGracias por utilizar Wazelog. ¡Buen viaje!\n'), !.
+
+    %write('\nDuracion en condiciones normales: ', TiempoNormal, 'min.'),
+    %write('\nDuración con presa: ', TiempoPresa, 'min.').
+
+recorrer_lista(Lista, Elemento, Tamano):-
+    Tamano > 1,
+    nth0(0, Lista, Elemento1, Restante),
+    write(Elemento1),
+    write(', '),
+    length(Restante, Tamano2),
+    recorrer_lista(Restante, Elemento2, Tamano2).
+
+recorrer_lista(Lista, Lista, Tamano):-
+    nth0(0, Lista, Elemento1, Restante),
+    write(Elemento1).
+
 
 %------------------------------ Sistema Experto ----------------------------------------------------------------
 
@@ -139,16 +186,19 @@ punto_intermedio(L0,L1) :-
     read_line_to_string(user_input, Resp),
     atom_string(Atom, Resp),
     afirmacion(Atom),
-    obtener_punto_intermedio(L0, L1).
+    obtener_punto_intermedio(L0, L1), !.
 
-punto_intermedio(L0, L0):- write(L0).
+punto_intermedio(L0, L0):- 
+    nth0(0, L0, Origen, R),
+    length(L0, Tamano),
+    obtener_ruta(L0, [Origen], Ruta_Final, Tamano, 0, 0, 0), !.
 
 obtener_punto_intermedio(L0, L1):-
     write('\nPor favor indíqueme cuál es la ubicación de este punto intermedio: \n'),
     read_line_to_string(user_input, Oracion),
     separar_oracion(Oracion, Lista),
     oracion(Lista,L), nodo(L, Lugar), nth0(1, L1, Lugar, L0),
-    punto_intermedio(L1, L2).
+    punto_intermedio(L1, L2), !.
 
 afirmacion(si).
 
